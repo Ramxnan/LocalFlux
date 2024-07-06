@@ -30,64 +30,65 @@ from .Part_3.driver import driver_part3
 def homepage(request):
     return render(request, 'nba/index.html')
 
-def register(request):
-    form = CreateUserForm()
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            # Check if the college code is correct
-            college_code = form.cleaned_data.get('college_code')
-            if college_code == '560035':
-                user = form.save(commit=False)
-                display_name = user.username.split('@')[0]
-                user.save()
-            user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
-            try:
-                os.makedirs(user_base_directory, exist_ok=True)
-                Generated_Templates_dir = os.path.join(user_base_directory, 'Generated_Templates')
-                os.makedirs(Generated_Templates_dir, exist_ok=True)
-                Branch_Calculation_dir = os.path.join(user_base_directory, 'Branch_Calculation')
-                os.makedirs(Branch_Calculation_dir, exist_ok=True)
-                Batch_Calculation_dir = os.path.join(user_base_directory, 'Batch_Calculation')
-                os.makedirs(Batch_Calculation_dir, exist_ok=True)
-            except Exception as e:
-                pass
-            messages.success(request, "Registration successful, please login.")
-            return redirect('login')
-        else:
-            if User.objects.filter(username=request.POST.get('email')).exists():
-                messages.error(request, "Email already registered, please login.")
-            else:
-                messages.error(request, "Invalid college code, please contact system admin for further instructions.")
+# def register(request):
+#     form = CreateUserForm()
+#     if request.method == 'POST':
+#         form = CreateUserForm(request.POST)
+#         if form.is_valid():
+#             # Check if the college code is correct
+#             college_code = form.cleaned_data.get('college_code')
+#             if college_code == '560035':
+#                 user = form.save(commit=False)
+#                 display_name = user.username.split('@')[0]
+#                 user.save()
+#             user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
+#             try:
+#                 os.makedirs(user_base_directory, exist_ok=True)
+#                 Generated_Templates_dir = os.path.join(user_base_directory, 'Generated_Templates')
+#                 os.makedirs(Generated_Templates_dir, exist_ok=True)
+#                 Branch_Calculation_dir = os.path.join(user_base_directory, 'Branch_Calculation')
+#                 os.makedirs(Branch_Calculation_dir, exist_ok=True)
+#                 Batch_Calculation_dir = os.path.join(user_base_directory, 'Batch_Calculation')
+#                 os.makedirs(Batch_Calculation_dir, exist_ok=True)
+#             except Exception as e:
+#                 pass
+#             messages.success(request, "Registration successful, please login.")
+#             return redirect('login')
+#         else:
+#             if User.objects.filter(username=request.POST.get('email')).exists():
+#                 messages.error(request, "Email already registered, please login.")
+#             else:
+#                 messages.error(request, "Invalid college code, please contact system admin for further instructions.")
 
-    context = {'registerform': form}
-    return render(request, 'nba/register.html', context=context)
+#     context = {'registerform': form}
+#     return render(request, 'nba/register.html', context=context)
 
-def login(request):
-    form = LoginForm()
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
+# def login(request):
+#     form = LoginForm()
+#     if request.method == 'POST':
+#         form = LoginForm(request, data=request.POST)
 
-        if form.is_valid():
-            email = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+#         if form.is_valid():
+#             email = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
 
-            user = authenticate(request, username=email, password=password)
+#             user = authenticate(request, username=email, password=password)
 
-            if user is not None:
-                auth.login(request, user)
-                return redirect("dashboard")
-            else:
-                form.add_error(None, "Invalid email or password")
-    context = {'loginform': form}
+#             if user is not None:
+#                 auth.login(request, user)
+#                 return redirect("dashboard")
+#             else:
+#                 form.add_error(None, "Invalid email or password")
+#     context = {'loginform': form}
 
-    return render(request, 'nba/login.html', context=context)
+#     return render(request, 'nba/login.html', context=context)
 
 
 
-@login_required(login_url = "login")
+# @login_required(login_url = "login")
 def dashboard(request):
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
     user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
     Generated_Templates_dir = os.path.join(user_directory, 'Generated_Templates')
 
@@ -179,7 +180,9 @@ def submit(request):
 
         print(Component_Details)
         # Directory for generated templates
-        display_name = request.user.username.split('@')[0]
+        # display_name = request.user.username.split('@')[0]
+        display_name = 'user'
+
         Generated_Templates_dir = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
         # Generate file name for the Excel file
@@ -198,7 +201,9 @@ def submit(request):
 #=======================================================================================================
 def download_file_generated(request, file_name):
     # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
+
     Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
     # Check which folder contains the file
     if os.path.isfile(os.path.join(Generated_Templates_path, file_name)):
@@ -219,7 +224,9 @@ def download_file_generated(request, file_name):
 #=======================================================================================================
 def delete_file_generated(request, file_name):
     # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
+
     Generated_Templates_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates')
 
     # Check which folder contains the file
@@ -234,13 +241,15 @@ def delete_file_generated(request, file_name):
 #=======================================================================================================
 #=======================================================================================================
 #============================Branch Calculation========================================================
-    
+ 
 @csrf_exempt
 def upload_multiple_files_branch(request):
     if request.method == 'POST':
         uploaded_files = request.FILES.getlist('BranchExcelFiles')
         num_files = len(uploaded_files)
-        display_name = request.user.username.split('@')[0]
+        # display_name = request.user.username.split('@')[0]
+        display_name = 'user'
+
         user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
         branch_directory = os.path.join(user_directory, 'Branch_Calculation')
         
@@ -271,7 +280,9 @@ def upload_multiple_files_branch(request):
 #=======================================================================================================
 def download_file_branch(request, file_name, folder_name):
     # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
+
     Branch_file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
     # Check which folder contains the file
     if os.path.isfile(os.path.join(Branch_file_path, file_name)):
@@ -290,7 +301,8 @@ def download_file_branch(request, file_name, folder_name):
     raise Http404("File not found")
 #=======================================================================================================
 def download_folder_branch(request, folder_name):
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation', folder_name)
 
     # Create a ZIP file in memory
@@ -311,7 +323,8 @@ def download_folder_branch(request, folder_name):
 
 #=======================================================================================================
 def delete_folder_branch(request, folder_name):
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Branch_Calculation')
 
     # Check if the directory exists
@@ -335,7 +348,8 @@ def upload_multiple_files_batch(request):
     if request.method == 'POST':
         uploaded_files = request.FILES.getlist('BatchExcelFiles')
         num_files = len(uploaded_files)
-        display_name = request.user.username.split('@')[0]
+        # display_name = request.user.username.split('@')[0]
+        display_name = 'user'
         user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
         batch_directory = os.path.join(user_directory, 'Batch_Calculation')
         
@@ -365,7 +379,8 @@ def upload_multiple_files_batch(request):
 #=======================================================================================================
 def download_file_batch(request, file_name, folder_name):
     # Paths to the different folders
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
     Batch_file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Batch_Calculation', folder_name)
     # Check which folder contains the file
     if os.path.isfile(os.path.join(Batch_file_path, file_name)):
@@ -385,7 +400,8 @@ def download_file_batch(request, file_name, folder_name):
 
 #=======================================================================================================
 def download_folder_batch(request, folder_name):
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
     batch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Batch_Calculation', folder_name)
 
     # Create a ZIP file in memory
@@ -404,7 +420,8 @@ def download_folder_batch(request, folder_name):
     return response
 #=======================================================================================================
 def delete_folder_batch(request, folder_name):
-    display_name = request.user.username.split('@')[0]
+    # display_name = request.user.username.split('@')[0]
+    display_name = 'user'
     branch_calculation_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Batch_Calculation')
 
     # Check if the directory exists
