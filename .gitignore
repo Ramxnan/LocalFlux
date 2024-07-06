@@ -1,7 +1,7 @@
 __pycache__
 db.sqlite3
 media
-eduflux_venv
+localflux_venv
 TestFiles
 test_driver1.py
 test_driver2.py
