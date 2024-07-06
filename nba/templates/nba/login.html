@@ -1,0 +1,111 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login - EduFlux</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+        {% load static %}
+        <style>
+            body {
+        font-family: 'Roboto', sans-serif;
+        background-image: url("{% static 'assets/img/Amritaa.jpg' %}"); /* Update this path */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* Optional: to make the background fixed with respect to the viewport */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+            .login-container {
+                background-color: #fff;
+                padding: 40px;
+                border-radius: 20px; /* Rounded corners for the dialog box */
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+                text-align: center;
+                width: 300px;
+            }
+
+            .login-container h2 {
+                color: #b1096b; /* Keeping your original color */
+                margin-bottom: 30px;
+                font-weight: 400;
+            }
+
+            .form-input {
+                width: 100%;
+                padding: 15px;
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+                border-radius: 20px; /* Rounded inputs */
+                font-family: 'Roboto', sans-serif;
+                font-size: 16px;
+            }
+
+            .login-button {
+                background-color: #b1096b; /* Keeping your original button color */
+                color: white;
+                padding: 15px 20px;
+                border: none;
+                border-radius: 20px; /* Rounded button */
+                cursor: pointer;
+                width: 100%;
+                font-family: 'Roboto', sans-serif;
+                font-size: 16px;
+                margin-top: 10px; /* Added space above the button */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the button */
+                transition: background-color 0.3s ease;
+            }
+
+            .login-button:hover {
+                background-color: #9e0852; /* Slightly darker shade on hover */
+            }
+
+            .footer {
+                margin-top: 15px;
+                font-size: 14px;
+                color: #666;
+            }
+
+            .footer a {
+                color: #b1096b; /* Keeping your original link color */
+                text-decoration: none;
+            }
+
+            .footer a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-container">
+            <h2>Login to EduFlux</h2>
+            <form method="post" action="{% url 'login' %}"> <!-- Replace with your login endpoint -->
+                {% csrf_token %}
+                <input type="text" class="form-input" id="username" name="username" placeholder="Username" required>
+                <input type="password" class="form-input" id="password" name="password" placeholder="Password" required>
+                <button type="submit" class="login-button">Login</button>
+            </form>
+            <div class="footer">
+                Don't have an account? <a href="{% url 'register' %}">Register</a>
+            </div>
+        </div>
+        
+        <script>
+            function displayFlashMessages(){
+                let flashMessages = JSON.parse(sessionStorage.getItem('flash_messages'));
+                if(flashMessages){
+                    for(let flashMessage of flashMessages){
+                        alert(flashMessage);
+                    }
+                }
+            }
+            window.onload = displayFlashMessages;
+        </script>
+    </body>
+    </html>

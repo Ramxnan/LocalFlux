@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+{% load static %}
+{% load custom_filters %}
+
+<html>
+
+<head>
+    <title>EduFlux</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="{% static '/assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static '/assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
+    <link href="{% static '/assets/vendor/glightbox/css/glightbox.min.css'%}" rel="stylesheet">
+  
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        body::after {
+            content: '';
+            background-image: url("{% static '/assets/img/Amritaa.jpg'%}"); /* Change to the path of your image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            filter: blur(5px); /* Adjust the blur intensity */
+            z-index: -1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            overflow-y: auto;
+            height: 100%;
+            padding: 20px;
+            border-radius: 15px; /* Rounded corners for the content */
+        }
+
+        .navbar {
+            background-color: #b1096b;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+        }
+
+        .navbar-brand img {
+        max-height: 40px; /* Adjust the maximum height as needed */
+        margin-top: -5px; /* Adjust the margin-top to vertically align the logo */
+        }
+
+        .btn-custom {
+            width: auto; /* Adjusted for auto width */
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px; /* More pronounced rounded corners for buttons */
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+            margin: 0.5rem; /* Added margin for spacing */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .container {
+            max-height: 80vh; /* Adjust this value as needed */
+             overflow-y: auto; /* This will allow scrolling */
+            margin-top: 50px;
+            background: #fff; /* White background for the form container */
+            padding: 2rem;
+            border-radius: 15px; /* Rounded corners for the container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+        }
+
+        .form-control, .form-control:focus {
+            border-radius: 15px; /* Rounded corners for inputs */
+            border: 1px solid #ced4da;
+            box-shadow: none; /* Remove Bootstrap's default input shadow */
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #333; /* Darker label color for better contrast */
+        }
+
+        .content-wrapper {
+            background-color: rgba(255, 255, 255, 0.9);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 20px;
+            overflow: auto; /* Enable scroll inside the wrapper if needed */
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        #leftColumn, #rightColumn {
+            display: none; /* Initially hide both columns */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px); /* Apply a blur effect to the background */
+            -webkit-backdrop-filter: blur(8px); /* For Safari */
+        }
+        #TemplateLeft, #BranchLeft , #BatchLeft, #TemplateRight, #BranchRight, #BatchRight, #TemplateHeader, #BranchHeader, #BatchHeader {
+            display: none;
+        }
+        .custom-submit-btn {
+            font-size: 1.1em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-submit-btn:hover {
+            background-color: #6747c7; /* Slightly lighter purple on hover */
+        }
+
+        .excel-upload-area {
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .excel-file-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .custom-file-input {
+            border-radius: 20px; /* Consistent rounded corners */
+        }
+        /* Additional CSS */
+        .file-entry {
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+            padding: 10px;
+            border-radius: 25px;
+            border-color: #5724aa;
+            border-style: solid;
+            background-color: #e9ecef;
+            margin-bottom: 10px;
+        }
+        
+        .filename {
+             /*make it ... if it is too long*/
+             font-size: 1em; /* smaller font size for the timestamp */
+             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-timestamp
+        {
+            font-size: 0.9em; /* smaller font size for the timestamp */
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+        }
+
+        .folder-entry {
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+            padding: 10px;
+            border-radius: 25px;
+            border-color: #5724aa;
+            border-style: solid;
+            background-color: #e9ecef;
+            margin-bottom: 10px;
+        }
+                    /*on hover display change the colour*/
+        .folder-entry:hover {
+            background-color: #d1d1d1;
+        }
+
+       
+
+        .foldername {
+            /*make it ... if it is too long*/
+            font-size: 1em; /* smaller font size for the timestamp */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .folder-timestamp {
+            font-size: 0.9em; /* smaller font size for the timestamp */
+            color: #6c757d; /* muted text color */
+            margin-right: auto; /* push the timestamp to the right */
+            padding-left: 10px; /* space between file name and timestamp */
+        }
+
+        .files-list {
+            color: #000000;
+        }
+
+        .header {
+            background-color: #b1096b;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        
+
+
+
+
+    </style>
+</head>
+
+<body>
+        <!-- Message Modal -->
+        <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- The message will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#"><img src="{% static '/assets/img/AmritaLogo.png'%}" alt="Logo"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <span class="navbar-text ml-auto" style="color: aliceblue; font-size: large; font-weight: bolder; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">Welcome {{ request.user.username|split_user_name }}!</span> <!-- Centering the content -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Above the container -->
+    <div class="container mt-5">
+        <h1 id='start' class="text-center" style="color: rgb(0, 0, 0)">Amrita Course Accreditation System</h1>
+        <div class="row justify-content-center">
+   
+                    <div class="col-md-3 text-center">
+                        <button id="TemplateBtn" class="btn btn-primary btn-custom">Template Generation</button>
+                    </div>
+                  
+                    <div class="col-md-3 text-center">
+                        <button id="BranchBtn" class="btn btn-primary btn-custom">Branch calculation</button>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <button id="BatchBtn" class="btn btn-primary btn-custom">Batch calculation</button>
+                
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- Headers-->
+
+                <div id="TemplateHeader" class="header text-center">
+                    <div class="col-md-12 text-center" style="background-color: #b1096b; color: #ffffff; padding: 10px;">
+                        <h2>Template Generation</h2>
+                    </div>
+                </div>
+                <div id="BranchHeader" class="header text-center">
+                    <div class="col-md-12 text-center" style="background-color: #b1096b; color: #ffffff; padding: 10px;">
+                        <h2>Branch Calculation</h2>
+                    </div>
+                </div>
+                <div id="BatchHeader" class="header text-center">
+                    <div class="col-md-12 text-center" style="background-color: #b1096b; color: #ffffff; padding: 10px;">
+                        <h2>Batch Calculation</h2>
+                    </div>
+                </div>
+                    
+                <!-- Left Column: Forms -->
+                <div class="col-md-6">
+                    <form id="TemplateLeft" name="TemplateLeft" method="POST" action="{% url 'submit' %}">
+                        <br><br><br>
+
+                        <div class="form-group">
+                            <label for="teacher">Teacher</label>
+                            <input type="text" id="teacher" name="teacher" placeholder="Teacher" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="academicYearStart">Academic Year</label>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="number" id="academicYearStart" name="academicYearStart" placeholder="Start Year" required class="form-control">
+                                </div>
+                                <div class="col-auto my-auto">
+                                    -
+                                </div>
+                                <div class="col">
+                                    <input type="number" id="academicYearEnd" name="academicYearEnd" placeholder="End Year" readonly required class="form-control">
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="semester">Semester</label>
+                            <select id="semester" name="semester" class="form-control" required>
+                                <option value="">Select the Semester</option>
+                                <option value="Even">Even</option>
+                                <option value="Odd">Odd</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="branch">Branch</label>
+                            <select id="branch" name="branch" class="form-control" required>
+                                <option value="">Select the branch</option>
+                                <option value="AIE">AIE</option>
+                                <option value="EAC">EAC</option>
+                                <option value="CSE">CSE</option>
+                                <option value="MEE">MEE</option>
+                                <option value="CIV">CIV</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="batch">Batch</label>
+                            <input type="month" id="batch" name="batch" placeholder="Batch" required class="form-control" pattern="\d{4}">
+                        </div> 
+                
+                        <div class="form-group">
+                            <label for="section">Section</label>
+                            <select id="section" name="section" class="form-control" required>
+                                <option value="">Select the section</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="Combined">Combined</option>                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subjectCode">Subject Code</label>
+                            <input id="subjectCode" type="text" name="subjectCode" placeholder="Subject Code" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="subjectName">Subject Name</label>
+                            <input type="text" id="subjectName" name="subjectName" placeholder="Subject Name" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfStudents">Number of Students</label>
+                            <input id= "numberOfStudents" type="number" name="numberOfStudents" placeholder="Number of Students" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfCOs">Number of CO's</label>
+                            <input id= "numberOfCOs" type="number" name="numberOfCOs" placeholder="Number of CO's" required class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="numberOfComponents">Number of Components</label>
+                            <input type="number" id="numberOfComponents" name="numberOfComponents" placeholder="Number of Components" required class="form-control" value="2">
+                        </div>
+        
+                        <div class="component-container mt-3" id="componentContainer"></div>
+                        <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Submit</button>
+                    </form>
+
+                    <!-- upload multiple files for BranchLeft-->
+                    <form id="BranchLeft" name="BranchLeft" method="POST" action="{% url 'upload_multiple_files_branch' %}" enctype="multipart/form-data">
+                        <br><br><br>
+
+                        <div class="form-group">
+                            <label for="BranchExcelFiles">Upload Atleast 2 Sections Excel File For Merging</label>
+                            <input type="file" name="BranchExcelFiles" id="BranchExcelFiles" multiple required class="form-control" accept=".xlsx">
+                        </div>
+    
+                        <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>
+                    </form>
+
+                    <!-- upload multiple files for BatchLeft-->
+                    <form id="BatchLeft" name="BatchLeft" method="POST" action="{% url 'upload_multiple_files_batch' %}" enctype="multipart/form-data">
+                        <br><br><br>
+
+                        <div class="form-group">
+                            <label for="BatchExcelFiles">Upload Atleast 2 Sections Excel File For Batch Calculation</label>
+                            <input type="file" name="BatchExcelFiles" id="BatchExcelFiles" multiple required class="form-control" accept=".xlsx">
+                        </div>
+    
+                        <button type="submit" class="btn btn-primary mt-3" style="background-color: #5724aa;">Upload</button>
+                    </form>
+
+                        
+                    
+
+
+                    
+
+                </div>
+
+                <!-- Right Column: Files -->
+                <div class="col-md-6" name="files" >
+                    <div id="TemplateRight" style="display: none">
+                        <br><br><br>
+                        <h3>Generated Templates:</h3>
+                        {% for file_name, timestamp in Generated_Templates.items %}
+                            <div class="file-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- File Name -->
+                                    <span class="filename"><a href="{% url 'download_file_generated' file_name %}">{{ file_name|split_file_name }}</a></span>
+                                    
+                                    <!-- Timestamp -->
+                                    <small class="file-timestamp">{{ timestamp }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_file_generated' file_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No empty templates found.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div id="BranchRight" style="display: none">
+                        <br><br><br>
+                        <h3>Combined Files</h3>
+                        {% for folder_name, data in Branch_Calculation.items %}
+                            <div class="folder-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="filesbranch{{ forloop.counter }}">
+                                    <!-- Display Folder Name -->
+                                    <span class="foldername">
+                                            {{ folder_name|split_folder_name }}
+                                    </span>
+                    
+                                    <!-- Timestamp -->
+                                    <small class="folder-timestamp">{{ data.1 }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_folder_branch' folder_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                    
+                                <!-- Hidden Files List -->
+                                <div id="filesbranch{{ forloop.counter }}" class="files-list" style="display: none;">
+                                    {% for file in data.0 %}
+                                        &ensp;&ensp; <i class="bi bi-arrow-return-right"></i><a href="{% url 'download_file_branch' folder_name file %}">{{ file|split_file_name }}</a><br>
+                                    {% endfor %}
+                                    <br>
+                                    <a href="{% url 'download_folder_branch' folder_name %}" class="btn btn-success">
+                                        Download Folder
+                                    </a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No calculated files found.</p>
+                        {% endfor %}
+                    </div>
+
+
+                    <div id="BatchRight" style="display: none">
+                        <br><br><br>
+
+                        <h3>Combined Batch Files</h3>
+                        {% for folder_name, data in Batch_Calculation.items %}
+                            <div class="folder-entry mb-2">
+                                <div class="d-flex justify-content-between align-items-center toggle-files" data-target="filesbatch{{ forloop.counter }}">
+                                    <!-- Display Folder Name -->
+                                    <span class="foldername">
+                                            {{ folder_name|split_folder_name }}
+                                    </span>
+                    
+                                    <!-- Timestamp -->
+                                    <small class="folder-timestamp">{{ data.1 }}</small>
+                                    
+                                    <!-- Delete Form -->
+                                    <form method="POST" action="{% url 'delete_folder_batch' folder_name %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
+                    
+                                <!-- Hidden Files List -->
+                                <div id="filesbatch{{ forloop.counter }}" class="files-list" style="display: none;">
+                                    {% for file in data.0 %}
+                                        &ensp;&ensp; <i class="bi bi-arrow-return-right"></i><a href="{% url 'download_file_batch' folder_name file %}">{{ file|split_file_name }}</a><br>
+                                    {% endfor %}
+                                    <br>
+                                    <a href="{% url 'download_folder_batch' folder_name %}" class="btn btn-success">
+                                        Download Folder
+                                    </a>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No calculated files found.</p>
+                        {% endfor %}
+                    </div>
+
+                </div>
+                        
+            </div>
+                
+          
+        </div>
+    </div>            
+               
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleFilesContainers = document.querySelectorAll('.toggle-files');
+        
+            toggleFilesContainers.forEach(container => {
+                container.addEventListener('click', function(event) {
+                    // Prevent triggering when clicking on form elements
+                    if (!['BUTTON', 'A', 'INPUT'].includes(event.target.tagName)) {
+                        const targetId = this.getAttribute('data-target');
+                        const targetElement = document.getElementById(targetId);        
+                        if (targetElement.style.display === "none") {
+                            targetElement.style.display = "block";
+                        } else {
+                            targetElement.style.display = "none";
+                        }
+                    }
+                });
+            });
+        })
+        
+        document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const showSection = urlParams.get('show');
+
+        if (showSection === 'branch') {
+            document.getElementById("TemplateHeader").style.display = "none";
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "block";
+            document.getElementById("BranchLeft").style.display = "block";
+            document.getElementById("BranchRight").style.display = "block";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
+        } else if (showSection === 'template') {
+            document.getElementById("TemplateHeader").style.display = "block";
+            document.getElementById("TemplateLeft").style.display = "block";
+            document.getElementById("TemplateRight").style.display = "block";
+
+            document.getElementById("BranchHeader").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
+            
+        } else if (showSection === 'batch') {
+            document.getElementById("TemplateHeader").style.display = "none";
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "block";
+            document.getElementById("BatchLeft").style.display = "block";
+            document.getElementById("BatchRight").style.display = "block";
+        }});
+            
+
+        document.getElementById("TemplateBtn").onclick = function() {
+            document.getElementById("TemplateHeader").style.display = "block";
+            document.getElementById("TemplateLeft").style.display = "block";
+            document.getElementById("TemplateRight").style.display = "block";
+
+            document.getElementById("BranchHeader").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
+
+        }
+
+        document.getElementById("BranchBtn").onclick = function() {
+            document.getElementById("TemplateHeader").style.display = "none";
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "block";
+            document.getElementById("BranchLeft").style.display = "block";
+            document.getElementById("BranchRight").style.display = "block";
+
+            document.getElementById("BatchHeader").style.display = "none";
+            document.getElementById("BatchLeft").style.display = "none";
+            document.getElementById("BatchRight").style.display = "none";
+        }
+
+        document.getElementById("BatchBtn").onclick = function() {
+            document.getElementById("TemplateHeader").style.display = "none";
+            document.getElementById("TemplateLeft").style.display = "none";
+            document.getElementById("TemplateRight").style.display = "none";
+
+            document.getElementById("BranchHeader").style.display = "none";
+            document.getElementById("BranchLeft").style.display = "none";
+            document.getElementById("BranchRight").style.display = "none";
+
+            document.getElementById("BatchHeader").style.display = "block";
+            document.getElementById("BatchLeft").style.display = "block";
+            document.getElementById("BatchRight").style.display = "block";
+        }
+
+
+
+    
+        $(document).ready(function(){
+            $("#academicYearStart").change(function() {
+                var startYear = $(this).val();
+                $("#academicYearEnd").val(parseInt(startYear) + 1);
+            });
+    
+            $("#batch").on("focus", function(){
+                this.type = 'year';
+            });
+    
+            $("#batch").on("blur", function(){
+                this.type = 'text';
+            });
+    
+            function updateComponentContainer() {
+                var numComponents = $("#numberOfComponents").val();
+                $("#componentContainer").empty().show();
+                var table = $('<table></table>').addClass('table');
+                var thead = $('<thead></thead>').append('<tr><th>Component Name</th><th>Questions</th><th>Type</th></tr>');
+                table.append(thead);
+                for(var i = 1; i <= numComponents; i++) {
+                    var row = $('<tr></tr>');
+                    row.append('<td><input type="text" name="componentName'+(i)+'" placeholder="Name '+(i)+'" required class="form-control"></td>');
+                    row.append('<td><input type="text" name="componentValue'+(i)+'" placeholder="No. of Questions" required class="form-control"></td>');
+                    row.append('<td><select name="componentType'+(i)+'" class="form-control" required><option value="">Type</option><option value="Internal">Internal</option><option value="External">External</option></select></td>');
+                    table.append(row);
+                }
+                $("#componentContainer").append(table);
+            }
+
+            // Call the function on page load
+            $(document).ready(function() {
+                updateComponentContainer();
+                
+            // Bind the function to the change event
+            $("#numberOfComponents").change(updateComponentContainer);
+            });
+
+
+            
+        });
+    
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const branchform = document.getElementById("BranchLeft");
+            const batchForm = document.getElementById("BatchLeft");
+            // Ensure unique IDs for each input to correctly reference them
+            const branchfileInput = document.getElementById("BranchExcelFiles"); // Updated ID for branch file input
+            const batchfileInput = document.getElementById("BatchExcelFiles"); // Updated ID for batch file input
+            const branchSubmitButton = branchform.querySelector('button[type="submit"]');
+            const batchSubmitButton = batchForm.querySelector('button[type="submit"]');
+
+            branchform.onsubmit = function(e) {
+                if (branchfileInput.files.length < 2) {
+                    e.preventDefault(); // Prevent branchform submission
+                    alert("You must select at least 2 files."); // Alert or better to use a more user-friendly message display
+                    // Optionally, disable the submit button until the condition is met
+                    branchSubmitButton.disabled = true;
+                }
+            };
+
+            batchForm.onsubmit = function(e) {
+                if (batchfileInput.files.length < 2) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("You must select at least 2 files."); // Alert or better to use a more user-friendly message display
+                    // Optionally, disable the submit button until the condition is met
+                    batchSubmitButton.disabled = true;
+                }
+            };
+
+            branchfileInput.onchange = function() {
+                // Re-enable the submit button if the condition is now met
+                if (branchfileInput.files.length >= 2) {
+                    branchSubmitButton.disabled = false;
+                } else {
+                    branchSubmitButton.disabled = true;
+                }
+            }; // Added missing semicolon here
+
+            batchfileInput.onchange = function() {
+                // Re-enable the submit button if the condition is now met
+                if (batchfileInput.files.length >= 2) {
+                    batchSubmitButton.disabled = false;
+                } else {
+                    batchSubmitButton.disabled = true;
+                }
+            }; // Added missing semicolon here
+        });
+        
+        $(document).ready(function(){
+            {% if messages %}
+                {% for message in messages %}
+                    var messageType = "{{ message.tags }}";
+                    var alertClass = messageType === "success" ? "alert-success" : "alert-danger";
+                    var messageContent = "{{ message }}";
+                    
+                    // Set modal body class and content
+                    var modalBody = $("#messageModal .modal-body");
+                    modalBody.addClass("alert " + alertClass);
+                    modalBody.html(messageContent);
+                    
+                    // Show the modal
+                    $("#messageModal").modal('show');
+                {% endfor %}
+            {% endif %}
+        });
+
+
+
+    </script>
+    
+        
+    
+    
+</body>
+
+</html>
+
