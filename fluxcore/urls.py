@@ -4,8 +4,6 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.shortcuts import redirect
 
-def redirect_to_dashboard(request):
-    return redirect('dashboard')
 
 urlpatterns = [
 
@@ -14,7 +12,7 @@ urlpatterns = [
     # path('register/', views.register, name='register'),
     # path('login/', views.login, name='login'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('logout', views.logout, name='logout'),
+    path('homepage/', views.homepage, name='logout'),
     path('submit/', views.submit, name='submit'),
     path('upload_multiple_files_branch/', views.upload_multiple_files_branch, name='upload_multiple_files_branch'),
     path('upload_multiple_files_batch/', views.upload_multiple_files_batch, name='upload_multiple_files_batch'),
