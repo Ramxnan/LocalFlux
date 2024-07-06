@@ -28,6 +28,9 @@ from .Part_2.driver import driver_part2
 from .Part_3.driver import driver_part3
 
 def homepage(request):
+    #if the media folder is not there, create it
+    if not os.path.exists(os.path.join(settings.MEDIA_ROOT, 'storage', 'user')):
+        os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user'))
     return render(request, 'index.html')
 
 # def register(request):
