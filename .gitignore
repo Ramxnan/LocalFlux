@@ -9,5 +9,5 @@ test_driver3.py
 folder_structure.py
 create_zip.py
 LocalFluxSetup.zip
-setup.*
 fluxdownload/
+setupv2.bat
