@@ -5,11 +5,11 @@ REM Set the virtual environment name
 set VENV_NAME=localflux_venv
 
 REM Set the download URL
-set DOWNLOAD_URL=https://github.com/Ramxnan/LocalFlux/releases/download/latest/LocalFluxSetup.zip
+set DOWNLOAD_URL=https://github.com/Ramxnan/LocalFlux/archive/refs/tags/latest.zip
 
 REM Set the download and extract paths
-set ZIP_FILE=LocalFluxSetup.zip
-set EXTRACT_DIR=LocalFlux
+set ZIP_FILE=LocalFlux-latest.zip
+set EXTRACT_DIR=LocalFlux-latest
 
 REM Check if Python is installed
 echo Checking if Python is installed...
@@ -38,15 +38,15 @@ if %errorlevel% neq 0 (
     echo ----------------------------------------
 )
 
-REM Create the extraction directory
-if not exist %EXTRACT_DIR% (
-    mkdir %EXTRACT_DIR%
-) else (
-    echo Extraction directory already exists, please delete the directory and run the script again
-    echo ----------------------------------------
-    pause
-    exit
-)
+@REM REM Create the extraction directory
+@REM if not exist %EXTRACT_DIR% (
+@REM     mkdir %EXTRACT_DIR%
+@REM ) else (
+@REM     echo Extraction directory already exists, please delete the directory and run the script again
+@REM     echo ----------------------------------------
+@REM     pause
+@REM     exit
+@REM )
 
 REM Download the zip file
 echo Downloading the zip file...
@@ -56,9 +56,10 @@ echo ----------------------------------------
 
 REM Extract the zip file into the extraction directory
 echo Extracting the zip file...
-tar -xf %ZIP_FILE% -C %EXTRACT_DIR%
+tar -xf %ZIP_FILE%
 echo Zip file extracted
 echo ----------------------------------------
+
 
 REM Change to the extracted directory
 cd %EXTRACT_DIR%
