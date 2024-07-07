@@ -31,6 +31,9 @@ def homepage(request):
     #if the media folder is not there, create it
     if not os.path.exists(os.path.join(settings.MEDIA_ROOT, 'storage', 'user')):
         os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user'))
+        os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'Generated_Templates'))
+        os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'Branch_Calculation'))
+        os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'Batch_Calculation'))
     return render(request, 'index.html')
 
 # def register(request):
