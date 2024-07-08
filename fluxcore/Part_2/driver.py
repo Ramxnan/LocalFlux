@@ -26,7 +26,9 @@ from openpyxl import load_workbook
 import pandas as pd
 from openpyxl.utils import get_column_letter
 
-def driver_part2(input_dir_path, output_dir_path):
+def driver_part2(input_dir_path, output_dir_path, config):
+
+
     #create openpyxl workbook
     wbwrite = Workbook()
     wbwrite.remove(wbwrite.active)
@@ -124,6 +126,14 @@ def driver_part2(input_dir_path, output_dir_path):
                         return Warnings
             prev_Component_Details_check = new_Component_Details_check
 
+            #Check if the number of PO and PSO is same as config
+            start_copo = 5
+            end_copo = wsread_input_details.max_column
+            if end_copo-start_copo+1 != config["PO"]+config["PSO"]:
+                Warnings.append(f"{file} has different number of PO and PSO as set in config")
+                return Warnings
+
+
             new_qn_co_mm_btl_check = {}         
             for key, numques in Component_Details.items():
                 comp_ws = wbread[key]
@@ -174,15 +184,17 @@ def driver_part2(input_dir_path, output_dir_path):
             start_row = 3
             end_row = 3 + data["Number_of_COs"] - 1
             start_col = 5
-            end_col=21
+            end_col=start_col+config["PO"]+config["PSO"]-1
             cell_range = f'{get_column_letter(start_col)}{start_row}:{get_column_letter(end_col)}{end_row}'
 
             values = []
             for row in wsread_input_details[cell_range]:
                 values.append([cell.value for cell in row])
 
-            po_columns=[f"PO{i}" for i in range(1,13)]
-            pso_columns=[f"PSO{i}" for i in range(1,6)]
+            # po_columns=[f"PO{i}" for i in range(1,13)]
+            # pso_columns=[f"PSO{i}" for i in range(1,6)]
+            po_columns=[f"PO{i}" for i in range(1,config["PO"]+1)]
+            pso_columns=[f"PSO{i}" for i in range(1,config["PSO"]+1)]
             df_columns=po_columns+pso_columns
             
             co_po_table=pd.DataFrame(values, columns=df_columns)
@@ -204,7 +216,7 @@ def driver_part2(input_dir_path, output_dir_path):
             wswrite = input_detail(data,Component_Details,wswrite, conditional=True)
             wswrite = indirect_co_assessment(data,wswrite, conditional=True)
             adjust_width(wswrite)
-            wswrite = CO_PO_Table(data,wswrite, conditional=True)
+            wswrite = CO_PO_Table(data,config,wswrite, conditional=True)
 
             for key in Component_Details.keys():
                 wbwrite.create_sheet(key)
@@ -248,11 +260,11 @@ def driver_part2(input_dir_path, output_dir_path):
 
             wbwrite.create_sheet(f"{data['Section']}_Course_Attainment")
             wswrite = wbwrite[f"{data['Section']}_Course_Attainment"]
-            wswrite=write_course_attainment(data, Component_Details, wswrite)
+            wswrite=write_course_attainment(data, Component_Details, config, wswrite)
 
             wbwrite.create_sheet(f"{data['Section']}_Printout")
             wswrite = wbwrite[f"{data['Section']}_Printout"]
-            wswrite=printout(wswrite,data,2)
+            wswrite=printout(wswrite,data,config,2)
 
             #copy data from all the sheets of wbread to wbwrite
             for sheet in wbread.sheetnames:
@@ -310,7 +322,7 @@ def driver_part2(input_dir_path, output_dir_path):
     start_row = 3
     end_row = 3 + data["Number_of_COs"] - 1
     start_col = 5
-    end_col=21
+    end_col=start_col+config["PO"]+config["PSO"]-1
     #paste the content of Combined_co_po_table to given range in the sheet
     row=0
     col=0
@@ -321,7 +333,7 @@ def driver_part2(input_dir_path, output_dir_path):
             col+=1
         row+=1
 
-    wswrite = CO_PO_Table(Combined_data,wswrite)
+    wswrite = CO_PO_Table(Combined_data,config,wswrite)
 
 
 
@@ -404,11 +416,11 @@ def driver_part2(input_dir_path, output_dir_path):
 
     wbwrite.create_sheet("Combined_Course_Attainment")
     wswrite = wbwrite["Combined_Course_Attainment"]
-    wswrite=write_course_attainment(Combined_data, Combined_Component_Details, wswrite)
+    wswrite=write_course_attainment(Combined_data, Combined_Component_Details,config, wswrite)
 
     wbwrite.create_sheet("Combined_Printout")
     wswrite = wbwrite["Combined_Printout"]
-    wswrite=printout(wswrite,Combined_data,2)
+    wswrite=printout(wswrite,Combined_data,config,2)
 
     unique_id = str(uuid.uuid4()).split("-")[0]
     excel_file_name=f"Combined_{data['Batch']}_{data['Branch']}_{data['Semester']}_{data['Subject_Code']}_{unique_id}.xlsx"
