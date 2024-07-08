@@ -114,7 +114,7 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
 
 
 
-def CO_PO_Table(data,aw,conditional=False, copy=False):
+def CO_PO_Table(data,config,aw,conditional=False, copy=False):
     """
     Function to create CO-PO Table
 
@@ -126,7 +126,7 @@ def CO_PO_Table(data,aw,conditional=False, copy=False):
     openpyxl.worksheet.worksheet.Worksheet: Worksheet object
     """
     #merge cells depending on number of POs
-    aw.merge_cells(start_row=1, start_column=4, end_row=1, end_column=12+5+1+3)
+    aw.merge_cells(start_row=1, start_column=4, end_row=1, end_column=config["PO"]+config["PSO"]+1+3)
     aw['D1']="CO-PO Mapping"
     cellstyle(aw['D1'], bold=True, alignment=True, border=True, fill="ffe74e")
    
@@ -138,23 +138,24 @@ def CO_PO_Table(data,aw,conditional=False, copy=False):
         aw[f"D{nco+2}"]=f"CO{nco}"
         cellstyle(aw[f"D{nco+2}"], bold=True, alignment=True, border=True)
 
-    for popso in range(1,12+5+1):
-        if popso<=12:
+    for popso in range(1,config["PO"]+config["PSO"]+1):
+    # for popso in range(1,12+5+1):
+        if popso<=config["PO"]:
             aw[f"{get_column_letter(popso+4)}2"]=f"PO{popso}   "
         else:
-            aw[f"{get_column_letter(popso+4)}2"]=f"PSO{popso-12}"
+            aw[f"{get_column_letter(popso+4)}2"]=f"PSO{popso-config['PO']}   "
         cellstyle(aw[f"{get_column_letter(popso+4)}2"], bold=True, alignment=True, border=True, fill="9bbb59")
         #set column width to 13
         aw.column_dimensions[f"{get_column_letter(popso+4)}"].width = 13
 
-    cellstyle_range(aw[f"D3:U{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'], alignment=True)
+    cellstyle_range(aw[f"D3:{get_column_letter(config['PO']+config['PSO']+1+3)}{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'], alignment=True)
     
     if conditional:
         #set conditional formatting for empty cells   
         pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
         red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
         for nco in range(1,data["Number_of_COs"]+1):
-            for popso in range(1,12+5+1):
+            for popso in range(1,config["PO"]+config["PSO"]+1):
                 aw.conditional_formatting.add(
                     f"{get_column_letter(popso+4)}{nco+2}",
                     FormulaRule(formula=[f'ISBLANK({get_column_letter(popso+4)}{nco+2})'], stopIfTrue=False, fill=pink_fill))
@@ -164,13 +165,14 @@ def CO_PO_Table(data,aw,conditional=False, copy=False):
                 
         #unlock the cells
         purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
-        for row in aw.iter_rows(min_row=3, max_row=2+data["Number_of_COs"], min_col=5, max_col=12+5+1+3):
+        for row in aw.iter_rows(min_row=3, max_row=2+data["Number_of_COs"], min_col=5, max_col=config["PO"]+config["PSO"]+1+3):
             for cell in row:
                 cell.protection = Protection(locked=False)
                 #cell.fill = purple_fill      
     if copy:
         for nco in range(1,data["Number_of_COs"]+1):
-            for popso in range(1,12+5+1):
+            # for popso in range(1,12+5+1):
+            for popso in range(1,config["PO"]+config["PSO"]+1):
                 aw[f"{get_column_letter(popso+4)}{nco+2}"]=f"='{data['Section']}_Input_Details'!{get_column_letter(popso+4)}{nco+2}"
                 cellstyle(aw[f"{get_column_letter(popso+4)}{nco+2}"], alignment=True, bold=True)
             

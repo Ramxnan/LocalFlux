@@ -3,7 +3,7 @@ from openpyxl.utils import  get_column_letter
 from .utils import adjust_width, cellstyle_range, cellstyle
 from .Input_Details import input_detail
 
-def printout(aw, data,start_row,copy=False,numco=None):
+def printout(aw, data,config,start_row,copy=False,numco=None):
 
     #============================================================================================================
     if not copy:
@@ -47,8 +47,8 @@ def printout(aw, data,start_row,copy=False,numco=None):
     column+=1
 
     #============================================================================================================            
-    interval=17
-
+    interval=config["PO"]+config["PSO"]
+    
     # Merging cells for "COs"
     aw.merge_cells(start_row=row, end_row=row+2, start_column=column,  end_column=column)
     cell_reference = f"{get_column_letter(column)}{row}"

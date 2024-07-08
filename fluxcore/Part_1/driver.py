@@ -10,7 +10,7 @@ from .printout import printout
 import os
 import uuid
 
-def driver_part1(data, Component_Details, file_path):
+def driver_part1(data, Component_Details, config, file_path):
     wb = Workbook()
     wb.remove(wb.active)
 
@@ -25,7 +25,7 @@ def driver_part1(data, Component_Details, file_path):
     ws = input_detail(data,Component_Details,ws,conditional=True)
     ws = indirect_co_assessment(data,ws,conditional=True)
     adjust_width(ws)
-    ws = CO_PO_Table(data,ws,conditional=True)
+    ws = CO_PO_Table(data,config,ws,conditional=True)
 
     #iterate throught Keys of Component_Details and make a worksheet for each key
     for key in Component_Details.keys():
@@ -71,11 +71,11 @@ def driver_part1(data, Component_Details, file_path):
 
     wb.create_sheet(f"{data['Section']}_Course_Attainment")
     ws = wb[f"{data['Section']}_Course_Attainment"]
-    ws=write_course_attainment(data, Component_Details, ws)
+    ws=write_course_attainment(data, Component_Details, config,ws)
 
     wb.create_sheet(f"{data['Section']}_Printout")
     ws = wb[f"{data['Section']}_Printout"]
-    ws=printout(ws,data,2)
+    ws=printout(ws,data,config,2)
 
     #save workbook
     unique_id = uuid.uuid4().hex[:8]

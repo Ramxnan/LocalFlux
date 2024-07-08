@@ -4,7 +4,7 @@ from openpyxl.utils import get_column_letter
 from .Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
 from .utils import cellstyle, cellstyle_range, adjust_width
 
-def write_course_attainment(data,Component_Details,aw):
+def write_course_attainment(data,Component_Details,config,aw):
     for row in aw.iter_rows():
         for cell in row:
             cell.protection = Protection(locked=True)
@@ -16,7 +16,7 @@ def write_course_attainment(data,Component_Details,aw):
 
     #============================================================================================================
     #============================================================================================================
-    aw=CO_PO_Table(data,aw,copy=True)
+    aw=CO_PO_Table(data,config,aw,copy=True)
     
 
     #============================================================================================================
@@ -123,7 +123,8 @@ def write_course_attainment(data,Component_Details,aw):
     #================================================================================================================================================================
 
     start=start_row_ca+3
-    interval=16
+    # interval=16
+    interval=config["PO"]+config["PSO"] -1
     rowindex=1
     for i in range(1, (data["Number_of_COs"]+1)):
         start+=1
@@ -204,25 +205,28 @@ def write_course_attainment(data,Component_Details,aw):
     #================================================================================================================================================================
     current_row = aw.max_row+4
     current_col = start_col_ca
-    aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=17+current_col)
+    # aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=17+current_col)
+    aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=config["PO"]+config["PSO"]+current_col)
     aw.cell(row=current_row, column=current_col).value = "Weighted PO/PSO Attainment Contribution"
-    cellstyle_range(aw[f'{get_column_letter(current_col)}{current_row}:{get_column_letter(17+current_col)}{current_row}'],border=True, fill="ffe74e", bold=True, alignment=True)
+    cellstyle_range(aw[f'{get_column_letter(current_col)}{current_row}:{get_column_letter(config["PO"]+config["PSO"]+current_col)}{current_row}'],border=True, fill="ffe74e", bold=True, alignment=True)
 
     current_row+=1
     aw.cell(row=current_row, column=current_col).value = "COs\\POs"
     cellstyle(aw.cell(row=current_row, column=current_col), bold=True, alignment=True, border=True, fill="4bacc6", font_color="FFFFFF")
 
-    for popso in range(1,12+5+1):
-        if popso<=12:
+    # for popso in range(1,12+5+1):
+    for popso in range(1,config["PO"]+config["PSO"]+1):
+        if popso<=config["PO"]:
             aw.cell(row=current_row, column=popso+current_col).value = f"PO{popso}"
         else:
-            aw.cell(row=current_row, column=popso+current_col).value = f"PSO{popso-12}"
+            aw.cell(row=current_row, column=popso+current_col).value = f"PSO{popso-config['PO']}"
         cellstyle(aw.cell(row=current_row, column=popso+current_col), bold=True, alignment=True, border=True, fill="4bacc6", font_color="FFFFFF")
 
     current_row+=1
 
     start=start_row_ca+3
-    interval=17
+    # interval=17
+    interval=config["PO"]+config["PSO"]
 
     current_col=start_col_ca
     for co in range(1,data["Number_of_COs"]+1):
@@ -231,9 +235,14 @@ def write_course_attainment(data,Component_Details,aw):
         
 
  
-        for popso in range(1,12+5+1):
+        # for popso in range(1,12+5+1):
+        for popso in range(1,config["PO"]+config["PSO"]+1):
             aw[f"{get_column_letter(popso+current_col)}{current_row}"]=f'={get_column_letter(start_col_ca+2)}{start+popso}*{get_column_letter(start_col_ca+12)}{start+1}'
             cellstyle(aw[f"{get_column_letter(popso+current_col)}{current_row}"], alignment=True, border=True)
+
+        #current_col=4; popso=1; current_row=80
+        #col=6 row=23
+
 
         current_row+=1
         start+=interval
@@ -256,16 +265,18 @@ def write_course_attainment(data,Component_Details,aw):
 
     
     current_col+=1
-    aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=16+current_col)
+    # aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=16+current_col)
+    aw.merge_cells(start_row=current_row, start_column=current_col, end_row=current_row, end_column=config["PO"]+config["PSO"]-1+current_col)
     aw.cell(row=current_row, column=current_col).value = "Final Ratio"
 
-    cellstyle_range(aw[f'{get_column_letter(current_col-4)}{current_row}:{get_column_letter(16+current_col)}{current_row}'],border=True, fill="ffe74e", bold=True, alignment=True)
+    cellstyle_range(aw[f'{get_column_letter(current_col-4)}{current_row}:{get_column_letter(config["PO"]+config["PSO"]-1+current_col)}{current_row}'],border=True, fill="ffe74e", bold=True, alignment=True)
     cellstyle_range(aw[f'{get_column_letter(current_col-4)}{current_row+1}:{get_column_letter(current_col-1)}{current_row+1}'],border=True, fill="4bacc6", bold=True, alignment=True, font_color="FFFFFF")
     current_row+=1
     current_col=4
     
 
-    for popso in range(1,12+5+1):
+    # for popso in range(1,12+5+1):
+    for popso in range(1,config["PO"]+config["PSO"]+1):
         main_formula = f'SUM({get_column_letter(popso+current_col)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(popso+current_col)}{current_row-2})/(SUM({get_column_letter(popso+4)}3:{get_column_letter(popso+4)}{data["Number_of_COs"]+2}))'
         complete_formula = f'=IF(AND(SUM({get_column_letter(popso+current_col)}{current_row-1-data["Number_of_COs"]}:{get_column_letter(popso+current_col)}{current_row-2})>0, SUM({get_column_letter(popso+4)}3:{get_column_letter(popso+4)}{data["Number_of_COs"]+2})>0), {main_formula}, 0)'
         aw[f"{get_column_letter(popso+current_col)}{current_row}"] = complete_formula
