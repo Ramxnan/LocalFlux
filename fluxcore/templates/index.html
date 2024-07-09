@@ -71,9 +71,35 @@
         font-size: 2rem;
       }
     }
+    #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #fff; /* Change this to your background color */
+        z-index: 1000;
+    }
+
+    #preloader-logo {
+        width: 100px; /* Adjust size as needed */
+        height: 100px; /* Adjust size as needed */
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
+  <div id="preloader">
+    <img src="{% static 'assets/LocalFlux_Assets/localflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+</div>
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="hero">
@@ -267,7 +293,7 @@
 
           <div class="col-sm-3 col-xs-6">
             <div class="card card-block">
-              <a href="#"><img alt="" class="team-img" src="{% static 'assets/img/team-2.png'%}">
+              <a href="#"><img alt="" class="team-img" src="{% static 'assets/img/team-2.PNG'%}">
                 <div class="card-title-wrap">
                   <span class="card-title">Ramanan R</span> <span class="card-text">Back End</span>
                 </div>
@@ -430,6 +456,13 @@
 
   <!-- Template Main JS File -->
   <script src="{%static 'assets/js/main.js'%}"></script>
+  <script>
+    window.addEventListener('load', function() {
+    document.getElementById('preloader').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    });
+
+</script>
 
 </body>
 

@@ -96,6 +96,9 @@
     </style>
 </head>
 <body>
+    <div id="preloader">
+        <img src="{% static 'assets/LocalFlux_Assets/localflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+    </div>
     {% if messages %}
         <script type="text/javascript">
         window.onload = function() {
@@ -132,5 +135,12 @@
             Already have an account? <a href="{% url 'login' %}">Login</a>
         </div>
     </div>
+    <script>
+        window.addEventListener('load', function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        });
+
+</script>
 </body>
 </html>

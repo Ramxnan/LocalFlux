@@ -21,6 +21,8 @@ import uuid
 import zipfile
 import shutil
 from django.urls import reverse
+import json
+
 
 
 from .Part_1.driver import driver_part1
@@ -35,6 +37,35 @@ def homepage(request):
         os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'Branch_Calculation'))
         os.makedirs(os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'Batch_Calculation'))
     return render(request, 'index.html')
+
+def read_config():
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    with open(config_file, 'r') as f:
+        return json.load(f)
+    
+def configure_outcomes(request):
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    if not os.path.exists(config_file):
+        with open(config_file, 'w') as f:
+            #dump null json
+            json.dump({}, f)
+
+    if request.method == 'POST':
+        num_pos = request.POST['num_pos']
+        num_psos = request.POST['num_psos']
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+
+        config['PO'] = int(num_pos)
+        config['PSO'] = int(num_psos)
+
+        with open(config_file, 'w') as f:
+            json.dump(config, f)
+
+        return redirect('dashboard')
+        
+    config = read_config()
+    return render(request, 'configure_outcomes.html', {'config': config})
 
 # def register(request):
 #     form = CreateUserForm()
@@ -93,6 +124,23 @@ def homepage(request):
 
 # @login_required(login_url = "login")
 def dashboard(request):
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    if not os.path.exists(config_file):
+        with open(config_file, 'w') as f:
+            #dump null json
+            json.dump({}, f)
+
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+
+        return render(request, 'configure_outcomes.html', {'config': config})
+    
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+    
+
+
+
     # display_name = request.user.username.split('@')[0]
     display_name = 'user'
     user_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
@@ -155,6 +203,10 @@ def logout(request):
 #============================Template Generation========================================================
 @csrf_exempt
 def submit(request):
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+
     if request.method == 'POST':
         data = {
             "Teacher": str(request.POST.get('teacher')),
@@ -195,7 +247,7 @@ def submit(request):
         excel_file_path = os.path.join(Generated_Templates_dir)
 
         # Call main1 function with the necessary data and file path
-        generated_file_name = driver_part1(data, Component_Details, excel_file_path)
+        generated_file_name = driver_part1(data, Component_Details,config, excel_file_path)
         file_path = os.path.join(settings.MEDIA_ROOT, 'storage', display_name, 'Generated_Templates', generated_file_name)
         if os.path.exists(file_path):
             response = FileResponse(open(file_path, 'rb'), as_attachment=True, filename=generated_file_name)
@@ -250,6 +302,10 @@ def delete_file_generated(request, file_name):
  
 @csrf_exempt
 def upload_multiple_files_branch(request):
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+
     if request.method == 'POST':
         uploaded_files = request.FILES.getlist('BranchExcelFiles')
         num_files = len(uploaded_files)
@@ -267,7 +323,7 @@ def upload_multiple_files_branch(request):
         
         for uploaded_file in uploaded_files:
             fs.save(uploaded_file.name, uploaded_file)
-        message = driver_part2(unique_folder_path, unique_folder_path)
+        message = driver_part2(unique_folder_path, unique_folder_path, config)
         message=message[0]
         if "success" in message:
             messages.success(request, message)
@@ -351,6 +407,10 @@ def delete_folder_branch(request, folder_name):
 
 @csrf_exempt
 def upload_multiple_files_batch(request):
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+
     if request.method == 'POST':
         uploaded_files = request.FILES.getlist('BatchExcelFiles')
         num_files = len(uploaded_files)
@@ -367,7 +427,7 @@ def upload_multiple_files_batch(request):
         
         for uploaded_file in uploaded_files:
             fs.save(uploaded_file.name, uploaded_file)
-        message = driver_part3(unique_folder_path, unique_folder_path)
+        message = driver_part3(unique_folder_path, unique_folder_path, config)
         message=message[0]
         if "success" in message:
             messages.success(request, message)

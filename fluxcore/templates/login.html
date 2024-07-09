@@ -83,6 +83,9 @@
         </style>
     </head>
     <body>
+        <div id="preloader">
+            <img src="{% static 'assets/LocalFlux_Assets/localflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+        </div>
         <div class="login-container">
             <h2>Login to EduFlux</h2>
             <form method="post" action="{% url 'login' %}"> <!-- Replace with your login endpoint -->
@@ -107,5 +110,12 @@
             }
             window.onload = displayFlashMessages;
         </script>
+        <script>
+            window.addEventListener('load', function() {
+            document.getElementById('preloader').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            });
+
+    </script>
     </body>
     </html>

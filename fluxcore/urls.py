@@ -11,6 +11,7 @@ urlpatterns = [
     path('homepage/', views.homepage, name='homepage'),
     # path('register/', views.register, name='register'),
     # path('login/', views.login, name='login'),
+    path('configure_outcomes/', views.configure_outcomes, name='configure_outcomes'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('homepage/', views.homepage, name='logout'),
     path('submit/', views.submit, name='submit'),
