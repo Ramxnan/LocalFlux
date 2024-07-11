@@ -60,10 +60,30 @@
             margin-top: 10px; /* Added space above the button */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the button */
             transition: background-color 0.3s ease;
+            margin-bottom: 30px;
         }
 
         .login-button:hover {
             background-color: #9e0852; /* Slightly darker shade on hover */
+        }
+
+        .back-button {
+            background-color: #1660d4; /* Keeping your original button color */
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 20px; /* Rounded button */
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            margin-top: 20px; /* Added space above the button */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the button */
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #003ea3; /* Slightly darker shade on hover */
         }
 
         .footer {
@@ -92,27 +112,18 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="num_pos">Number of Program Outcomes:</label>
-                <input type="number" id="num_pos" name="num_pos" class="form-control" placeholder="POs" value="{{ config.PO }}" min="1" step="1" required>
+                <input type="number" id="num_pos" name="num_pos" class="form-control" placeholder="POs" value="{{ config.PO }}" min="1" step="1" style="width: 20%;">
             </div>
             <div class="form-group">
                 <label for="num_psos">Number of Program Specific Outcomes:</label>
-                <input type="number" id="num_psos" name="num_psos" class="form-control" placeholder="PSOs" value="{{ config.PSO }}" min="1" step="1" required>
+                <input type="number" id="num_psos" name="num_psos" class="form-control" placeholder="PSOs" value="{{ config.PSO }}" min="1" step="1" style="width: 20%;" required>
             </div>
-            <button type="submit" class="login-button">Submit</button>
+            <button type="submit" class="login-button" style="width: 20%;">Submit</button>
         </form>
+        <!--  back button -->
+        <a href="{% url 'dashboard' %}" class="back-button">Back to Dashboard</a>
+
     </div>
-    
-    <script>
-        function displayFlashMessages(){
-            let flashMessages = JSON.parse(sessionStorage.getItem('flash_messages'));
-            if(flashMessages){
-                for(let flashMessage of flashMessages){
-                    alert(flashMessage);
-                }
-            }
-        }
-        window.onload = displayFlashMessages;
-    </script>
     <script>
         window.addEventListener('load', function() {
         document.getElementById('preloader').style.display = 'none';
@@ -132,5 +143,6 @@
             return true;
         }
     </script>
+
 </body>
 </html>
