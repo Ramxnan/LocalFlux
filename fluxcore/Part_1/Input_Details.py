@@ -244,7 +244,7 @@ def indirect_co_assessment(data,aw,id_page=False,copy=False, ca_page=False):
 
         # Merge cells and add headers
         aw.merge_cells(f'G{startrow}:I{startrow}')  
-        aw[f'G{startrow}'] = "Affinity Mapping"
+        aw[f'G{startrow}'] = "Attainment Mapping"
         cellstyle_range(aw[f'G{startrow}:I{startrow}'], bold=True, alignment=True, border=True, fill="ffe74e")
 
         startrow += 1
@@ -305,7 +305,6 @@ def indirect_co_assessment(data,aw,id_page=False,copy=False, ca_page=False):
             for cell in row:
                 cell.protection = Protection(locked=False)
                 #cell.fill = purple_fill
-        colour_table_Input_Details(aw)
 
         
                

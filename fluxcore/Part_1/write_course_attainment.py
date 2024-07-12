@@ -25,6 +25,16 @@ def write_course_attainment(data,Component_Details,config,aw):
                 
     #============================================================================================================
     #============================================================================================================
+    start_range_1 = f'G{data["Number_of_COs"]+7}'
+    start_range_2 = f'G{data["Number_of_COs"]+8}'
+    start_range_3 = f'G{data["Number_of_COs"]+9}'
+    end_range_1 = f'H{data["Number_of_COs"]+7}'
+    end_range_2 = f'H{data["Number_of_COs"]+8}'
+    end_range_3 = f'H{data["Number_of_COs"]+9}'
+    map_1 = f'I{data["Number_of_COs"]+7}'
+    map_2 = f'I{data["Number_of_COs"]+8}'
+    map_3 = f'I{data["Number_of_COs"]+9}'
+
 
     #merge cells col 4 to 16 and rows 8 to 10
     start_col_ca = 4
@@ -60,14 +70,29 @@ def write_course_attainment(data,Component_Details,config,aw):
 
     aw[f'{get_column_letter(start_col_ca+3)}{start_row_ca+3}'] = 'Attainment'
 
-    aw[f'{get_column_letter(start_col_ca+4)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    # aw[f'{get_column_letter(start_col_ca+4)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell=aw[f'{get_column_letter(start_col_ca+4)}{start_row_ca+3}']
+    target_cell.value=(
+        f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
+        f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
+        f'{start_range_3}, "-", {end_range_3}, " --> ", {map_3}, ")")'
+        )
+    
+
 
     aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+5, end_row=start_row_ca+2, end_column=start_col_ca+6)
     aw[f'{get_column_letter(start_col_ca+5)}{start_row_ca+2}'] = 'Internal(CIE)'
 
     aw[f'{get_column_letter(start_col_ca+5)}{start_row_ca+3}'] = 'Attainment'
 
-    aw[f'{get_column_letter(start_col_ca+6)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    # aw[f'{get_column_letter(start_col_ca+6)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell=aw[f'{get_column_letter(start_col_ca+6)}{start_row_ca+3}']
+    target_cell.value=(
+        f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
+        f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
+        f'{start_range_3}, "-", {end_range_3}, " --> ", {map_3}, ")")'
+        )
+    
 
     aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+7, end_row=start_row_ca+2, end_column=start_col_ca+8)
     aw[f'{get_column_letter(start_col_ca+7)}{start_row_ca+2}'] = '="Weighted Level of Attainment (" & B16 & " SEE + " & B15 & " CIE)"'
@@ -75,7 +100,13 @@ def write_course_attainment(data,Component_Details,config,aw):
 
     aw[f'{get_column_letter(start_col_ca+7)}{start_row_ca+3}'] = 'Attainment'
 
-    aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    # aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell=aw[f'{get_column_letter(start_col_ca+8)}{start_row_ca+3}']
+    target_cell.value=(
+        f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
+        f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
+        f'{start_range_3}, "-", {end_range_3}, " --> ", {map_3}, ")")'
+        )
 
     aw.merge_cells(start_row=start_row_ca+1, start_column=start_col_ca+9, end_row=start_row_ca+1, end_column=start_col_ca+10)
     aw[f'{get_column_letter(start_col_ca+9)}{start_row_ca+1}'] = 'Indirect'
@@ -84,14 +115,24 @@ def write_course_attainment(data,Component_Details,config,aw):
     aw[f'{get_column_letter(start_col_ca+9)}{start_row_ca+2}'] = 'Attainment'
 
     aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+10, end_row=start_row_ca+3, end_column=start_col_ca+10)
-    aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+2}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    # aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+2}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell.value=(
+        f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
+        f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
+        f'{start_range_3}, "-", {end_range_3}, " --> ", {map_3}, ")")'
+        )
 
     aw.merge_cells(start_row=start_row_ca+1, start_column=start_col_ca+11, end_row=start_row_ca+2, end_column=start_col_ca+12)
     aw[f'{get_column_letter(start_col_ca+11)}{start_row_ca+1}'] = 'Final Weighted CO Attainment (80% Direct + 20% Indirect)'
 
     aw[f'{get_column_letter(start_col_ca+11)}{start_row_ca+3}'] = 'Attainment'
 
-    aw[f'{get_column_letter(start_col_ca+12)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    # aw[f'{get_column_letter(start_col_ca+12)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell.value=(
+        f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
+        f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
+        f'{start_range_3}, "-", {end_range_3}, " --> ", {map_3}, ")")'
+        )
 
     aw.column_dimensions[get_column_letter(start_col_ca-1)].width = 17.22
     aw.column_dimensions[get_column_letter(start_col_ca)].width = 17.22
@@ -165,15 +206,7 @@ def write_course_attainment(data,Component_Details,config,aw):
         row=(6 + data["Number_of_Students"] + 5)
         aw.cell(row=start, column=start_col_ca+3).value=f'={data["Section"]}_External_Components!{get_column_letter(col)}{row}'
 
-        start_range_1 = f'G{data["Number_of_COs"]+7}'
-        start_range_2 = f'G{data["Number_of_COs"]+8}'
-        start_range_3 = f'G{data["Number_of_COs"]+9}'
-        end_range_1 = f'H{data["Number_of_COs"]+7}'
-        end_range_2 = f'H{data["Number_of_COs"]+8}'
-        end_range_3 = f'H{data["Number_of_COs"]+9}'
-        map_1 = f'I{data["Number_of_COs"]+7}'
-        map_2 = f'I{data["Number_of_COs"]+8}'
-        map_3 = f'I{data["Number_of_COs"]+9}'
+
 
 
         # aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>0,{get_column_letter(start_col_ca+3)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+3)}{start}>=40,{get_column_letter(start_col_ca+3)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+3)}{start}>=60,{get_column_letter(start_col_ca+3)}{start}<=100),3,"0")))'
