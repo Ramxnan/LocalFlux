@@ -5,10 +5,10 @@ from .Input_Details import input_detail, indirect_co_assessment, CO_PO_Table
 from .utils import cellstyle, cellstyle_range, adjust_width
 
 def write_course_attainment(data,Component_Details,config,aw):
-    for row in aw.iter_rows():
-        for cell in row:
-            cell.protection = Protection(locked=True)
-    aw.protection.sheet = True
+    # for row in aw.iter_rows():
+    #     for cell in row:
+    #         cell.protection = Protection(locked=True)
+    # aw.protection.sheet = True
 
     #============================================================================================================
     aw=input_detail(data,Component_Details,aw,copy=True)
@@ -21,21 +21,20 @@ def write_course_attainment(data,Component_Details,config,aw):
 
     #============================================================================================================
     #============================================================================================================
-    aw=indirect_co_assessment(data,aw,copy=True)
+    aw=indirect_co_assessment(data,aw,copy=True,ca_page=True)
                 
     #============================================================================================================
     #============================================================================================================
 
     #merge cells col 4 to 16 and rows 8 to 10
     start_col_ca = 4
+    start_row_ca = data["Number_of_COs"]+8+data["Number_of_COs"]+1
 
-    aw.merge_cells(start_row=data["Number_of_COs"]+data["Number_of_COs"]+8, start_column=start_col_ca, end_row=data["Number_of_COs"]+data["Number_of_COs"]+10, end_column=start_col_ca+12)
-    aw[f'{get_column_letter(start_col_ca)}{data["Number_of_COs"]+data["Number_of_COs"]+8}'] = 'Course Attainment'
-    cellstyle_range(aw[f'{get_column_letter(start_col_ca)}{data["Number_of_COs"]+data["Number_of_COs"]+8}:{get_column_letter(start_col_ca+12)}{data["Number_of_COs"]+data["Number_of_COs"]+10}'],border=True, fill="ffe74e", bold=True, alignment=True)
+    aw.merge_cells(start_row=start_row_ca, start_column=start_col_ca, end_row=start_row_ca+2, end_column=start_col_ca+12)
+    aw[f'{get_column_letter(start_col_ca)}{start_row_ca}'] = 'Course Attainment'
+    cellstyle_range(aw[f'{get_column_letter(start_col_ca)}{start_row_ca}:{get_column_letter(start_col_ca+12)}{start_row_ca+2}'],border=True, fill="ffe74e", bold=True, alignment=True)
 
-
-    start_row_ca = data["Number_of_COs"]+8+data["Number_of_COs"]+3
-
+    start_row_ca+=3
     aw.merge_cells(start_row=start_row_ca, start_column=start_col_ca, end_row=start_row_ca+3, end_column=start_col_ca)
     aw[f'{get_column_letter(start_col_ca)}{start_row_ca}'] = 'Course Outcome'
 
@@ -166,13 +165,46 @@ def write_course_attainment(data,Component_Details,config,aw):
         row=(6 + data["Number_of_Students"] + 5)
         aw.cell(row=start, column=start_col_ca+3).value=f'={data["Section"]}_External_Components!{get_column_letter(col)}{row}'
 
-        aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>0,{get_column_letter(start_col_ca+3)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+3)}{start}>=40,{get_column_letter(start_col_ca+3)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+3)}{start}>=60,{get_column_letter(start_col_ca+3)}{start}<=100),3,"0")))'
+        start_range_1 = f'G{data["Number_of_COs"]+7}'
+        start_range_2 = f'G{data["Number_of_COs"]+8}'
+        start_range_3 = f'G{data["Number_of_COs"]+9}'
+        end_range_1 = f'H{data["Number_of_COs"]+7}'
+        end_range_2 = f'H{data["Number_of_COs"]+8}'
+        end_range_3 = f'H{data["Number_of_COs"]+9}'
+        map_1 = f'I{data["Number_of_COs"]+7}'
+        map_2 = f'I{data["Number_of_COs"]+8}'
+        map_3 = f'I{data["Number_of_COs"]+9}'
+
+
+        # aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>0,{get_column_letter(start_col_ca+3)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+3)}{start}>=40,{get_column_letter(start_col_ca+3)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+3)}{start}>=60,{get_column_letter(start_col_ca+3)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
+        target_cell=aw.cell(row=start, column=start_col_ca+4)
+        target_cell.value=(
+            f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_1},'
+            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_1}),{map_1},'
+            f'IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_2},'
+            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_2}),{map_2},'
+            f'IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_3},'
+            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_3}),{map_3},"0")))'
+        )
+
 
         col=(data["Number_of_COs"]*internal_components_number) + (1*internal_components_number) + 2 + rowindex
         row=(6 + data["Number_of_Students"] + 5)
         aw.cell(row=start, column=start_col_ca+5).value=f'={data["Section"]}_Internal_Components!{get_column_letter(col)}{row}'
 
-        aw.cell(row=start, column=start_col_ca+6).value=f'=IF(AND({get_column_letter(start_col_ca+5)}{start}>0,{get_column_letter(start_col_ca+5)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+5)}{start}>=40,{get_column_letter(start_col_ca+5)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+5)}{start}>=60,{get_column_letter(start_col_ca+5)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+6).value=f'=IF(AND({get_column_letter(start_col_ca+5)}{start}>0,{get_column_letter(start_col_ca+5)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+5)}{start}>=40,{get_column_letter(start_col_ca+5)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+5)}{start}>=60,{get_column_letter(start_col_ca+5)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+6).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
+        target_cell=aw.cell(row=start, column=start_col_ca+6)
+        target_cell.value=(
+            f'=IF(AND({get_column_letter(start_col_ca+5)}{start}>={start_range_1},'
+            f'{get_column_letter(start_col_ca+5)}{start}<={end_range_1}),{map_1},'
+            f'IF(AND({get_column_letter(start_col_ca+5)}{start}>={start_range_2},'
+            f'{get_column_letter(start_col_ca+5)}{start}<={end_range_2}),{map_2},'
+            f'IF(AND({get_column_letter(start_col_ca+5)}{start}>={start_range_3},'
+            f'{get_column_letter(start_col_ca+5)}{start}<={end_range_3}),{map_3},"0")))'
+        )
+
 
         SEE_attainment = f'{get_column_letter(start_col_ca+3)}{start}'
         CIE_attainment = f'{get_column_letter(start_col_ca+5)}{start}'
@@ -181,11 +213,33 @@ def write_course_attainment(data,Component_Details,config,aw):
         formula = f'={calculation}'
         aw.cell(row=start, column=start_col_ca+7).value = formula
 
-        aw.cell(row=start, column=start_col_ca+8).value=f'=IF(AND({get_column_letter(start_col_ca+7)}{start}>0,{get_column_letter(start_col_ca+7)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+7)}{start}>=40,{get_column_letter(start_col_ca+7)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+7)}{start}>=60,{get_column_letter(start_col_ca+7)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+8).value=f'=IF(AND({get_column_letter(start_col_ca+7)}{start}>0,{get_column_letter(start_col_ca+7)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+7)}{start}>=40,{get_column_letter(start_col_ca+7)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+7)}{start}>=60,{get_column_letter(start_col_ca+7)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+8).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
+        target_cell=aw.cell(row=start, column=start_col_ca+8)
+        target_cell.value=(
+            f'=IF(AND({get_column_letter(start_col_ca+7)}{start}>={start_range_1},'
+            f'{get_column_letter(start_col_ca+7)}{start}<={end_range_1}),{map_1},'
+            f'IF(AND({get_column_letter(start_col_ca+7)}{start}>={start_range_2},'
+            f'{get_column_letter(start_col_ca+7)}{start}<={end_range_2}),{map_2},'
+            f'IF(AND({get_column_letter(start_col_ca+7)}{start}>={start_range_3},'
+            f'{get_column_letter(start_col_ca+7)}{start}<={end_range_3}),{map_3},"0")))'
+        )
+
 
         aw.cell(row=start, column=start_col_ca+9).value=f'=E{2+data["Number_of_COs"]+4+rowindex}'
 
-        aw.cell(row=start, column=start_col_ca+10).value=f'=IF(AND({get_column_letter(start_col_ca+9)}{start}>0,{get_column_letter(start_col_ca+9)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+9)}{start}>=40,{get_column_letter(start_col_ca+9)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+9)}{start}>=60,{get_column_letter(start_col_ca+9)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+10).value=f'=IF(AND({get_column_letter(start_col_ca+9)}{start}>0,{get_column_letter(start_col_ca+9)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+9)}{start}>=40,{get_column_letter(start_col_ca+9)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+9)}{start}>=60,{get_column_letter(start_col_ca+9)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+10).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
+        target_cell=aw.cell(row=start, column=start_col_ca+10)
+        target_cell.value=(
+            f'=IF(AND({get_column_letter(start_col_ca+9)}{start}>={start_range_1},'
+            f'{get_column_letter(start_col_ca+9)}{start}<={end_range_1}),{map_1},'
+            f'IF(AND({get_column_letter(start_col_ca+9)}{start}>={start_range_2},'
+            f'{get_column_letter(start_col_ca+9)}{start}<={end_range_2}),{map_2},'
+            f'IF(AND({get_column_letter(start_col_ca+9)}{start}>={start_range_3},'
+            f'{get_column_letter(start_col_ca+9)}{start}<={end_range_3}),{map_3},"0")))'
+        )
+
 
         direct_attainment = f'{get_column_letter(start_col_ca+7)}{start}'
         indirect_attainment = f'{get_column_letter(start_col_ca+9)}{start}'
@@ -193,7 +247,18 @@ def write_course_attainment(data,Component_Details,config,aw):
         formula = f'={calculation}'
         aw.cell(row=start, column=start_col_ca+11).value = formula
 
-        aw.cell(row=start, column=start_col_ca+12).value=f'=IF(AND({get_column_letter(start_col_ca+11)}{start}>0,{get_column_letter(start_col_ca+11)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+11)}{start}>=40,{get_column_letter(start_col_ca+11)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+11)}{start}>=60,{get_column_letter(start_col_ca+11)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+12).value=f'=IF(AND({get_column_letter(start_col_ca+11)}{start}>0,{get_column_letter(start_col_ca+11)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+11)}{start}>=40,{get_column_letter(start_col_ca+11)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+11)}{start}>=60,{get_column_letter(start_col_ca+11)}{start}<=100),3,"0")))'
+        # aw.cell(row=start, column=start_col_ca+12).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
+        target_cell=aw.cell(row=start, column=start_col_ca+12)
+        target_cell.value=(
+            f'=IF(AND({get_column_letter(start_col_ca+11)}{start}>{start_range_1},'
+            f'{get_column_letter(start_col_ca+11)}{start}<{end_range_1}),{map_1},'
+            f'IF(AND({get_column_letter(start_col_ca+11)}{start}>{start_range_2},'
+            f'{get_column_letter(start_col_ca+11)}{start}<{end_range_2}),{map_2},'
+            f'IF(AND({get_column_letter(start_col_ca+11)}{start}>{start_range_3},'
+            f'{get_column_letter(start_col_ca+11)}{start}<{end_range_3}),{map_3},"0")))'
+        )
+
 
         rowindex+=1
         start=start+interval

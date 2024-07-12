@@ -120,7 +120,7 @@ def colour_table_Input_Details(aw):
                             left=Side(border_style='thin', color='000000'),
                             right=Side(border_style='thin', color='000000'))
     row+=1
-    aw[f'B{row}']="Cell value greater than expected"
+    aw[f'B{row}']="Inconsistent data"
     aw[f'B{row}'].fill = PatternFill(start_color='FF5E5E', end_color='FF5E5E', fill_type='solid')
     aw[f'B{row}'].border = Border(top=Side(border_style='thin', color='000000'),
                             bottom=Side(border_style='thin', color='000000'),

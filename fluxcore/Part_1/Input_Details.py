@@ -7,7 +7,7 @@ from openpyxl.utils import get_column_letter                                  #i
 from openpyxl.styles import Protection
 
 
-def input_detail(data,Component_Details,aw,conditional=False, copy=False):
+def input_detail(data,Component_Details,aw,id_page=False, copy=False):
     for row in aw.iter_rows():
         for cell in row:
             cell.protection = Protection(locked=True)
@@ -67,8 +67,9 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
         aw['B18']=f"='{data['Section']}_Input_Details'!B18"
         aw['B19']=f"='{data['Section']}_Input_Details'!B19"
 
+
     # =================================================================================================================================================================
-    if conditional:
+    if id_page:
         aw['A22']="Component Details"
         aw['B22']="Number of Questions"
         cellstyle_range(aw['A22:B22'], bold=True, alignment=True, border=True, font_color="FFFFFF")
@@ -102,6 +103,8 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
         
         colour_table_Input_Details(aw)
 
+            
+
         #unlock the cells
         purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
         for row in aw.iter_rows(min_row=14, max_row=19, min_col=2, max_col=2):
@@ -114,7 +117,7 @@ def input_detail(data,Component_Details,aw,conditional=False, copy=False):
 
 
 
-def CO_PO_Table(data,config,aw,conditional=False, copy=False):
+def CO_PO_Table(data,config,aw,id_page=False, copy=False):
     """
     Function to create CO-PO Table
 
@@ -150,7 +153,7 @@ def CO_PO_Table(data,config,aw,conditional=False, copy=False):
 
     cellstyle_range(aw[f"D3:{get_column_letter(config['PO']+config['PSO']+1+3)}{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'], alignment=True)
     
-    if conditional:
+    if id_page:
         #set conditional formatting for empty cells   
         pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
         red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
@@ -180,7 +183,7 @@ def CO_PO_Table(data,config,aw,conditional=False, copy=False):
 
 
 
-def indirect_co_assessment(data,aw,conditional=False,copy=False):
+def indirect_co_assessment(data,aw,id_page=False,copy=False, ca_page=False):
     """
     Function to create Indirect CO Assessment
 
@@ -210,7 +213,7 @@ def indirect_co_assessment(data,aw,conditional=False,copy=False):
     endrow = startrow + data["Number_of_COs"]-1
     cellstyle_range(aw[f"D{startrow}:E{endrow}"], alignment=True, border=True, alternate=['fcd5b4', 'fde9d9'])
 
-    if conditional:
+    if id_page:
         pink_fill = PatternFill(start_color="D8A5B5", end_color="D8A5B5", fill_type="solid")
         red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
         for row in range(startrow, endrow+1):
@@ -233,6 +236,80 @@ def indirect_co_assessment(data,aw,conditional=False,copy=False):
         for nco in range(1,data["Number_of_COs"]+1):
             aw[f"E{nco+data['Number_of_COs']+6}"]=f"='{data['Section']}_Input_Details'!E{nco+data['Number_of_COs']+6}"
             cellstyle(aw[f"E{nco+data['Number_of_COs']+6}"], alignment=True, bold=True)
+
+
+    if ca_page:
+        startrow = data["Number_of_COs"]+5
+
+
+        # Merge cells and add headers
+        aw.merge_cells(f'G{startrow}:I{startrow}')  
+        aw[f'G{startrow}'] = "Affinity Mapping"
+        cellstyle_range(aw[f'G{startrow}:I{startrow}'], bold=True, alignment=True, border=True, fill="ffe74e")
+
+        startrow += 1
+        aw[f'G{startrow}'] = "Start Range"
+        aw[f'H{startrow}'] = "End Range"
+        aw[f'I{startrow}'] = "Mapping"
+        cellstyle_range(aw[f'G{startrow}:I{startrow}'], bold=True, alignment=True, border=True, fill="8a6f9f")
+
+        # Add range and mapping data
+        startrow += 1
+        aw[f'G{startrow}'] = 0
+        aw[f'H{startrow}'] = 39
+        aw[f'I{startrow}'] = 1
+
+        startrow += 1
+        aw[f'G{startrow}'] = 40
+        aw[f'H{startrow}'] = 59
+        aw[f'I{startrow}'] = 2
+
+        startrow += 1
+        aw[f'G{startrow}'] = 60
+        aw[f'H{startrow}'] = 100
+        aw[f'I{startrow}'] = 3
+
+        cellstyle_range(aw[f'G{startrow-2}:I{startrow}'], alignment=True, border=True, bold=True, alternate=['ffffff', 'e4dfec'])
+
+        #add conditional formatting
+        pink_fill = PatternFill(start_color="d8a5b5", end_color="d8a5b5", fill_type="solid")
+        red_fill = PatternFill(start_color="ff5e5e", end_color="ff5e5e", fill_type="solid")
+        
+        for row in range(startrow-2, startrow+1):
+            for col in range(7, 9):
+                # If cell is empty or less than 0 or greater than 100 then highlight it with pink or red
+                aw.conditional_formatting.add(
+                    f"{get_column_letter(col)}{row}",
+                    FormulaRule(formula=[f'OR({get_column_letter(col)}{row}>100, {get_column_letter(col)}{row}<0)'], stopIfTrue=False, fill=red_fill)
+                )
+                aw.conditional_formatting.add(
+                    f"{get_column_letter(col)}{row}",
+                    FormulaRule(formula=[f'ISBLANK({get_column_letter(col)}{row})'], stopIfTrue=False, fill=pink_fill)
+                )
+                #if the row is start-2 and the cell in col 7 does not start with 0, highlight it with red
+                if row == startrow-2 and col == 7:
+                    aw.conditional_formatting.add(
+                        f"{get_column_letter(col)}{row}",
+                        FormulaRule(formula=[f'{get_column_letter(col)}{row}<>0'], stopIfTrue=False, fill=red_fill)
+                    )
+                #if the row is startrow and the cell in col 8 is not 100, highlight it with red
+                if row == startrow and col == 8:
+                    aw.conditional_formatting.add(
+                        f"{get_column_letter(col)}{row}",
+                        FormulaRule(formula=[f'{get_column_letter(col)}{row}<>100'], stopIfTrue=False, fill=red_fill)
+                    )
+
+        #unlock the cells
+        purple_fill = PatternFill(start_color="7b83eb", end_color="7b83eb", fill_type="solid")
+        for row in aw.iter_rows(min_row=startrow-2, max_row=startrow, min_col=7, max_col=9):
+            for cell in row:
+                cell.protection = Protection(locked=False)
+                #cell.fill = purple_fill
+        colour_table_Input_Details(aw)
+
+        
+               
+
                 
 
     return aw
