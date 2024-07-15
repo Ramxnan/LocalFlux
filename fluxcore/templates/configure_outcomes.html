@@ -110,15 +110,20 @@
         <h2>Configuration Page</h2>
         <form method="post" action="{% url 'configure_outcomes' %}">
             {% csrf_token %}
-            <div class="form-group">
+            <div class="form-group" style="padding-top: 1%;">
                 <label for="num_pos">Number of Program Outcomes:</label>
                 <input type="number" id="num_pos" name="num_pos" class="form-control" placeholder="POs" value="{{ config.PO }}" min="1" step="1" style="width: 20%;">
             </div>
-            <div class="form-group">
+            <div class="form-group" style="padding-top: 1%;">
                 <label for="num_psos">Number of Program Specific Outcomes:</label>
                 <input type="number" id="num_psos" name="num_psos" class="form-control" placeholder="PSOs" value="{{ config.PSO }}" min="1" step="1" style="width: 20%;" required>
             </div>
+            <div class="form-group" style="padding-top: 1%;">
+                <label for="DOE">software expiry date:</label>
+                <input type="text" id="DOE" name="DOE" class="form-control" placeholder="DOE" value="{{ config.DOE }}" style="width: 20%;" disabled>
+            </div>
             <button type="submit" class="login-button" style="width: 20%;">Submit</button>
+
         </form>
         <!--  back button -->
         <a href="{% url 'dashboard' %}" class="back-button">Back to Dashboard</a>
