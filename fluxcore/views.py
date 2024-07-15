@@ -22,6 +22,7 @@ import zipfile
 import shutil
 from django.urls import reverse
 import json
+from datetime import datetime, timedelta
 
 
 
@@ -67,68 +68,34 @@ def configure_outcomes(request):
     config = read_config()
     return render(request, 'configure_outcomes.html', {'config': config})
 
-# def register(request):
-#     form = CreateUserForm()
-#     if request.method == 'POST':
-#         form = CreateUserForm(request.POST)
-#         if form.is_valid():
-#             # Check if the college code is correct
-#             college_code = form.cleaned_data.get('college_code')
-#             if college_code == '560035':
-#                 user = form.save(commit=False)
-#                 display_name = user.username.split('@')[0]
-#                 user.save()
-#             user_base_directory = os.path.join(settings.MEDIA_ROOT, 'storage', display_name)
-#             try:
-#                 os.makedirs(user_base_directory, exist_ok=True)
-#                 Generated_Templates_dir = os.path.join(user_base_directory, 'Generated_Templates')
-#                 os.makedirs(Generated_Templates_dir, exist_ok=True)
-#                 Branch_Calculation_dir = os.path.join(user_base_directory, 'Branch_Calculation')
-#                 os.makedirs(Branch_Calculation_dir, exist_ok=True)
-#                 Batch_Calculation_dir = os.path.join(user_base_directory, 'Batch_Calculation')
-#                 os.makedirs(Batch_Calculation_dir, exist_ok=True)
-#             except Exception as e:
-#                 pass
-#             messages.success(request, "Registration successful, please login.")
-#             return redirect('login')
-#         else:
-#             if User.objects.filter(username=request.POST.get('email')).exists():
-#                 messages.error(request, "Email already registered, please login.")
-#             else:
-#                 messages.error(request, "Invalid college code, please contact system admin for further instructions.")
 
-#     context = {'registerform': form}
-#     return render(request, 'register.html', context=context)
+def expiration(request):
+    if request.method == 'POST':
+        config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+        with open(config_file, 'r') as f:
+            config = json.load(f)
 
-# def login(request):
-#     form = LoginForm()
-#     if request.method == 'POST':
-#         form = LoginForm(request, data=request.POST)
+        days = request.POST['days']
+        doe = config['DOE']
+        doe = datetime.strptime(doe, "%d-%m-%y")
+        doe = doe + timedelta(days=int(days))
+        doe = doe.strftime("%d-%m-%y")
+        config['DOE'] = doe
+        print("days", days)
 
-#         if form.is_valid():
-#             email = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password')
+        with open(config_file, 'w') as f:
+            json.dump(config, f)
 
-#             user = authenticate(request, username=email, password=password)
-
-#             if user is not None:
-#                 auth.login(request, user)
-#                 return redirect("dashboard")
-#             else:
-#                 form.add_error(None, "Invalid email or password")
-#     context = {'loginform': form}
-
-#     return render(request, 'login.html', context=context)
+        return redirect('dashboard')
+    return render(request, 'expiration.html')
 
 
-
-# @login_required(login_url = "login")
 def dashboard(request):
     config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
     if not os.path.exists(config_file):
         with open(config_file, 'w') as f:
-            #dump null json
-            json.dump({}, f)
+            #dump null json and 'dod' as today's date in ddmmyy format
+            json.dump({'DOD': datetime.now().strftime("%d-%m-%y"), 'DOE': (datetime.now() + timedelta(days=120)).strftime("%d-%m-%y")}, f)
 
         with open(config_file, 'r') as f:
             config = json.load(f)
@@ -138,6 +105,11 @@ def dashboard(request):
     with open(config_file, 'r') as f:
         config = json.load(f)
     
+    #if doe is >= today's date, then redirect to expiration page
+    doe = datetime.strptime(config['DOE'], "%d-%m-%y")
+    today = datetime.now()
+    if doe < today:
+        return redirect('expiration')
 
 
 

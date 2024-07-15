@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>LocalFlux subscription</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  
+  <!-- Favicons -->
+  <link href="{%static 'assets\LocalFlux_Assets\localflux-favicon-white.png'%}" rel="icon">
+  <link href="{%static 'assets/img/apple-touch-icon.png'%}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{%static 'assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+  <link href="{%static 'assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
+  <link href="{%static 'assets/vendor/aos/aos.css" rel="stylesheet'%}">
+  <link href="{%static 'assets/vendor/glightbox/css/glightbox.min.css'%}" rel="stylesheet">
+  <link href="{%static 'assets/vendor/swiper/swiper-bundle.min.css'%}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{%static 'assets/css/exp.css'%}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: FlexStart
+  * Template URL: https://bootstrapmade.com/flexstart-bootstrap-startup-template/
+  * Updated: Jun 29 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <style>
+      /* Modal styles */
+      .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 25%;
+          top: 0;
+          width: 50%;
+          height: auto;
+          overflow: auto;
+          background-color: transparent;
+          padding-top: 60px;
+      }
+      .modal-content {
+          background-color: #939ffc;
+          /*Bigger font*/
+          font-size: 100em;
+          margin: 5% auto;
+          padding: 10px;
+          /* border: 1px solid #888; */
+          width: 80%;
+          /*center text*/
+          text-align: center;
+          /*ceter it vertically*/
+          vertical-align: middle;
+      }
+  </style>
+
+  
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="{% url 'homepage' %}" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <img src="{%static 'assets\LocalFlux_Assets\localflux-favicon-color.png'%}" alt="">
+        <h1 class="sitename">LocalFlux</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="{% url 'homepage' %}" class="active">Home</a></li>
+          <li><a href="#footer">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+            <h1 data-aos="fade-up">Your subscription has expired</h1>
+            <h2 data-aos="fade-up">To continue enjoying the benefits, extend your subscription</h2>
+            <form id="extensionForm" method="POST" action="{% url 'expiration' %}" onsubmit="return verifyCode()" style="padding-top: 10%; padding-bottom: 10%;">
+                {% csrf_token %}
+                <input type="text" class="form-control" id="codeInput" name="codeInput" placeholder="Enter code here" required style="height: 38px; width: 30%;">
+                <input type="text" class="form-control" id="days" name="days" placeholder="Extension" required style="height: 38px; width: 30%;">
+                <button type="submit" class="btn-get-started btn btn-primary" style="height: 38px; width: 30%;">Extend <i class="bi bi-arrows-fullscreen"></i></button>
+              </form>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+            <img src="{%static 'assets\LocalFlux_Assets\localflux-favicon-color.png'%}" class="img-fluid animated" style="width: 50%;" alt="">
+          </div>
+      </div>
+      <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+        <h3 data-aos="fade-up">You can still access the data in you file explorer</h3>
+        <h3 data-aos="fade-up">Path: \LocalFlux\media\storage\user </h3>
+        </div>
+          <div id="myModal" class="modal">
+              <div class="modal-content">
+                  <p id="modalMessage"></p>
+              </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="d-flex align-items-center">
+            <span class="sitename">LocalFlux</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p class="mt-3"><strong>Phone:</strong> <span>+91 9886690844</span></p>
+            <p><strong>Email:</strong> <span>ramanan.palur@gmail.com</span></p>
+          </div>
+        </div>
+
+
+
+        <div class="col-lg-2 col-md-3 footer-links">
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+          <h4>Follow Me</h4>
+          <p></p>
+          <div class="social-links d-flex">
+            <a href="https://github.com/ramxnan"><i class="bi bi-github"></i></a>
+            <a href="https://www.linkedin.com/in/ramanan-r/"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">LocalFlux</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{%static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+  <script src="{%static 'assets/vendor/php-email-form/validate.js'%}"></script>
+  <script src="{%static 'assets/vendor/aos/aos.js'%}"></script>
+  <script src="{%static 'assets/vendor/glightbox/js/glightbox.min.js'%}"></script>
+  <script src="{%static 'assets/vendor/purecounter/purecounter_vanilla.js'%}"></script>
+  <script src="{%static 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js'%}"></script>
+  <script src="{%static 'assets/vendor/isotope-layout/isotope.pkgd.min.js'%}"></script>
+  <script src="{%static 'assets/vendor/swiper/swiper-bundle.min.js'%}"></script>
+
+  <!-- Main JS File -->
+  <script src="{%static 'assets/js/main.js'%}"></script>
+  <script>
+    function getCurrentDateCode() {
+        const date = new Date();
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = String(date.getFullYear()).slice(2); // Get last two digits of the year
+        return day + month + year;
+    }
+
+    function verifyCode() {
+        const correctCode = getCurrentDateCode();
+        const userCode = document.getElementById('codeInput').value;
+        const modalMessage = document.getElementById('modalMessage');
+        const modal = document.getElementById('myModal');
+
+        if (userCode === correctCode) {
+            modalMessage.style.color = 'green';
+            modalMessage.textContent = 'Package extended...';
+            modal.style.display = "block";
+            setTimeout(function() {
+                modal.style.display = "none";
+                document.getElementById('extensionForm').submit(); // Submit the form
+            }, 3000); // Hide modal after 3 seconds and then submit the form
+            return false; // Prevent default form submission to handle it manually
+        } else {
+            modalMessage.style.color = 'red';
+            modalMessage.textContent = 'Incorrect code. Please try again.';
+            modal.style.display = "block";
+            setTimeout(function() {
+                modal.style.display = "none";
+            }, 3000); // Hide modal after 3 seconds
+            return false; // Prevent form submission
+        }
+    }
+    </script>
+
+
+</body>
+
+</html>
