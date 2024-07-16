@@ -103,7 +103,7 @@
             <h2 data-aos="fade-up">To continue enjoying the benefits, extend your subscription</h2>
             <form id="extensionForm" method="POST" action="{% url 'expiration' %}" onsubmit="return verifyCode()" style="padding-top: 10%; padding-bottom: 10%;">
                 {% csrf_token %}
-                <input type="text" class="form-control" id="codeInput" name="codeInput" placeholder="Enter code here" required style="height: 38px; width: 30%;">
+                <input type="password" class="form-control" id="codeInput" name="codeInput" placeholder="Enter code here" required style="height: 38px; width: 30%;">
                 <input type="text" class="form-control" id="days" name="days" placeholder="Extension" required style="height: 38px; width: 30%;">
                 <button type="submit" class="btn-get-started btn btn-primary" style="height: 38px; width: 30%;">Extend <i class="bi bi-arrows-fullscreen"></i></button>
               </form>
