@@ -197,21 +197,26 @@
   <script>
     function getCurrentDateCode() {
         const date = new Date();
-        const day = String(date.getDate()).padStart(2, '0');
+        let day = String(date.getDate()).padStart(2, '0');
         // set d0 as the first digit of the day
         const d0 = (day[0]%10)+1;
         const d1 = (day[1]%10)+1;
-        day = d0 + d1;
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        // day is str(d0) + str(d1)
+        day = d0.toString() + d1.toString();
+        let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         // set m0 as the first digit of the month
         const m0 = (month[0]%10)+1;
         const m1 = (month[1]%10)+1;
-        month = m0 + m1;
-        const year = String(date.getFullYear()).slice(2); // Get last two digits of the year
+        month = m0.toString() + m1.toString();
+        let year = String(date.getFullYear()).slice(2); // Get last two digits of the year
         // set y0 as the first digit of the year
         const y0 = (year[0]%10)+1;
         const y1 = (year[1]%10)+1;
-        year = y0 + y1;
+        year = y0.toString() + y1.toString();
+
+        //display the code
+        // console.log(day + month + year);
+        
         return day + month + year;
     }
 
