@@ -56,6 +56,9 @@ echo ----------------------------------------
 
 REM Run the Django server
 echo Running the Django application...
+
+REM Pause for 2 seconds
+timeout /t 2 /nobreak >nul
 start "" "http://127.0.0.1:8000"
 python manage.py runserver
 echo ----------------------------------------
