@@ -47,7 +47,6 @@ def printout(aw, data,config,start_row,copy=False,numco=None):
     column+=1
 
     #============================================================================================================            
-    interval=config["PO"]+config["PSO"]
     
     # Merging cells for "COs"
     aw.merge_cells(start_row=row, end_row=row+2, start_column=column,  end_column=column)
@@ -203,8 +202,13 @@ def printout(aw, data,config,start_row,copy=False,numco=None):
 
     #Printing all the data in the excel sheet
     if copy == False:
-        start_row_ca_data=numco+8+numco+3+4
+        interval=config["PO"]+config["PSO"]
+        print("interval",interval)
+
+        start_row_ca_data=numco+8+numco+1+3+3+1
+        print("start_row_ca_data",start_row_ca_data)
         start_col_ca_data=4+3
+        print("start_col_ca_data",start_col_ca_data)
         start_column=4
         row=start_row+3
         aw[f"{get_column_letter(start_column)}{row}"] = data['Subject_Code']
