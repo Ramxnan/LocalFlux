@@ -213,10 +213,10 @@ def driver_part2(input_dir_path, output_dir_path, config):
             #=================Write to Combined Workbook=================
             wbwrite.create_sheet(f"{data['Section']}_Input_Details")
             wswrite = wbwrite[f"{data['Section']}_Input_Details"]
-            wswrite = input_detail(data,Component_Details,wswrite, conditional=True)
-            wswrite = indirect_co_assessment(data,wswrite, conditional=True)
+            wswrite = input_detail(data,Component_Details,wswrite, id_page=True)
+            wswrite = indirect_co_assessment(data,wswrite, id_page=True)
             adjust_width(wswrite)
-            wswrite = CO_PO_Table(data,config,wswrite, conditional=True)
+            wswrite = CO_PO_Table(data,config,wswrite, id_page=True)
 
             for key in Component_Details.keys():
                 wbwrite.create_sheet(key)
