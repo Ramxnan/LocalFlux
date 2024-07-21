@@ -9,8 +9,26 @@ import uuid
 from openpyxl.utils import get_column_letter
 from Part_1.printout import printout
 from Part_1.utils import cellstyle_range, cellstyle
-#from printout import printout_template
+import xlwings as xw
 
+def recalculate_workbook(file_path):
+    app = xw.App(visible=False)
+    app.display_alerts = False
+    app.screen_updating = False
+    wb = app.books.open(file_path, update_links=True)  # Open with update_links=True to handle external links
+    for sheet in wb.sheets:
+        sheet.select()  # Select each sheet to ensure it is recalculated
+        wb.app.calculate()
+    wb.save()
+    wb.close()
+    app.quit()
+
+def get_merged_cell_value(ws, cell):
+    """ Returns the value of a cell, checking if it is part of a merged cell. """
+    for merged_range in ws.merged_cells.ranges:
+        if cell.coordinate in merged_range:
+            return ws.cell(merged_range.min_row, merged_range.min_col).value
+    return cell.value
 
 def driver_part3(input_dir_path, output_dir_path,config):
     warnings = []
@@ -35,9 +53,21 @@ def driver_part3(input_dir_path, output_dir_path,config):
     cellstyle_range(wswrite_printouts['D1:R1'], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
 
     startrow=3
+    print("Processing Printouts")
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("final"):
-            wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
+            print(f"Processing file: {file}")
+
+            recalculate_workbook(os.path.join(input_dir_path, file))
+
+            try:
+                wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
+                print(f"Successfully loaded workbook: {file}")
+            except Exception as e:
+                warnings.append(f"Failed to load workbook {file}: {e}")
+                print(f"Error: Failed to load workbook {file}: {e}")
+                continue
+
             ws_printout=""
             for ws in wbread.sheetnames:
                 if ws.endswith("Printout") and ws.startswith("Combined"):
@@ -65,15 +95,19 @@ def driver_part3(input_dir_path, output_dir_path,config):
             min_col=4
             max_row=1+3+Number_of_COs
             max_col=18
-            for row in range(min_row, max_row+1):
-                for col in range(min_col, max_col+1):
+            for row in range(min_row, max_row + 1):
+                for col in range(min_col, max_col + 1):
                     try:
-                        wswrite_printouts.cell(row=startrow-1, column=col).value=wsread_printout.cell(row=row, column=col).value
-                        #print("Row:", startrow-1, "Column:", col, "Value:", wsread_printout.cell(row=row, column=col).value)
-                    except:
-                        #print(f"Error in {file} at row {row} and column {col}")
-                        pass
-                startrow+=1
+                        cell = wsread_printout.cell(row=row, column=col)
+                        value = get_merged_cell_value(wsread_printout, cell)
+                        if value is None:
+                            print(f"None value at Row: {row}, Column: {col} in file {file}")
+                        wswrite_printouts.cell(row=startrow - 1, column=col).value = value
+                        print(f"Row: {startrow - 1}, Column: {col}, Value: {value}")
+                    except Exception as e:
+                        print(f"Error in {file} at row {row} and column {col}: {e}")
+                startrow += 1
+            startrow += 1
           
 
 
@@ -85,6 +119,8 @@ def driver_part3(input_dir_path, output_dir_path,config):
     #================================================================================================
     #================================================================================================
     # #PO calculation
+    print("================================================================================================")
+    print("Processing PO Calculation")
     wswrite_POCalculation=wbwrite["PO_calculations"]
 
     wswrite_POCalculation.merge_cells(f'A1:{get_column_letter(3+config['PO']+config['PSO'])}1')
@@ -126,6 +162,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
     for file in os.listdir(input_dir_path):
         #file shouldnt start with final
         if file.endswith(".xlsx") and not file.startswith("final"):
+            print(f"Processing file: {file}")
             wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
             #find the name of worksheet which ends with Input_Details
             wsname_ID=""
@@ -179,10 +216,10 @@ def driver_part3(input_dir_path, output_dir_path,config):
 
 
 
-    for key, value in dataframes_dict.items():
-        print(key)
-        print(value)
-        print("=====================================")
+    # for key, value in dataframes_dict.items():
+    #     print(key)
+    #     print(value)
+    #     print("=====================================")
 
     startrow=4
     startcol=1
@@ -333,7 +370,8 @@ def driver_part3(input_dir_path, output_dir_path,config):
     #================================================================================================
     #================================================================================================
     # #PO Articulation
-
+    print("================================================================================================")
+    print("Processing PO Articulation")
     wswrite_POArticulation=wbwrite["PO_Articulation"]
     #Merge cells 1 to config['PO']+config['PSO']
     wswrite_POArticulation.merge_cells(f'A1:{get_column_letter(2+config['PO']+config['PSO'])}1')
@@ -363,6 +401,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
     for file in os.listdir(input_dir_path):
         #file shouldnt start with final
         if file.endswith(".xlsx") and not file.startswith("final"):
+            print(f"Processing file: {file}")
             wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
             #find the name of worksheet which ends with Input_Details
             wsname_ID=""
