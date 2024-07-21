@@ -27,6 +27,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
     wbwrite.remove(wbwrite.active)
     wbwrite.create_sheet("Printouts",0)
     wbwrite.create_sheet("PO_calculations",1)
+    wbwrite.create_sheet("PO_Articulation",2)
     
     wswrite_printouts=wbwrite["Printouts"]
     wswrite_printouts.merge_cells('D1:R1')
@@ -327,6 +328,102 @@ def driver_part3(input_dir_path, output_dir_path,config):
     wswrite_POCalculation.column_dimensions['B'].width = 12
     wswrite_POCalculation.column_dimensions['C'].width = 16
 
+    
+
+    #================================================================================================
+    #================================================================================================
+    # #PO Articulation
+
+    wswrite_POArticulation=wbwrite["PO_Articulation"]
+    #Merge cells 1 to config['PO']+config['PSO']
+    wswrite_POArticulation.merge_cells(f'A1:{get_column_letter(2+config['PO']+config['PSO'])}1')
+    wswrite_POArticulation["A1"]="PO Articulation"
+    cellstyle_range(wswrite_POArticulation[f'A1:{get_column_letter(2+config['PO']+config['PSO'])}1'], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
+
+    wswrite_POArticulation["A2"]="S.No"
+    wswrite_POArticulation["B2"]="Course Code"
+    for popso in range(1,config['PO']+config['PSO']+1):
+        if popso<=config['PO']:
+            wswrite_POArticulation.cell(row=2, column=popso+2).value=f"PO{popso}"
+        else:
+            wswrite_POArticulation.cell(row=2, column=popso+2).value=f"PSO{popso-config['PO']}"
+
+    cellstyle_range(wswrite_POArticulation[f'A2:{get_column_letter(2+config['PO']+config['PSO'])}2'], bold=True, alignment=True, border=True, fill='6cb266', font_color='ffffff')
+
+
+    columns=[]
+    columns.append("Course Code")
+    for popso in range(1,config['PO']+config['PSO']+1):
+        if popso<=config['PO']:
+            columns.append(f"PO{popso}")
+        else:
+            columns.append(f"PSO{popso-config['PO']}")
+    final_po_articulation=pd.DataFrame(columns=columns)
+    
+    for file in os.listdir(input_dir_path):
+        #file shouldnt start with final
+        if file.endswith(".xlsx") and not file.startswith("final"):
+            wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
+            #find the name of worksheet which ends with Input_Details
+            wsname_ID=""
+
+            for ws in wbread.sheetnames:
+                if ws.endswith("Input_Details") and ws.startswith("Combined"):
+                    wsname_ID=ws
+
+            if wsname_ID=="":
+                warnings.append(f"Input_Details sheet not found in {file}")
+                return warnings
+            
+            # Check if number of POs and PSOs are same as in config file
+            start_copo = 5
+            end_copo = wbread[wsname_ID].max_column
+            if end_copo-start_copo+1 != config["PO"]+config["PSO"]:
+                warnings.append(f"{file} has different number of PO and PSO as set in config")
+                return warnings
+            
+            wsread_input_detials=wbread[wsname_ID]
+            Number_of_COs=wsread_input_detials["B11"].value
+
+            row=2+Number_of_COs+1
+            min_col=4
+            max_col=4+config['PO']+config['PSO']
+
+            rowdata=[]
+            for col in range(min_col, max_col+1):
+                rowdata.append(wsread_input_detials.cell(row=row, column=col).value)
+            rowdata_df=pd.DataFrame(rowdata).T
+            rowdata_df.columns=columns
+            final_po_articulation = pd.concat([final_po_articulation,rowdata_df], axis=0)
+
+    # final_po_articulation=final_po_articulation.replace(0, np.nan)
+    final_po_articulation.reset_index(drop=True, inplace=True)
+    #print(final_po_articulation)
+
+    startrow=3
+    sno=1
+    for _ in dataframe_to_rows(final_po_articulation, index=False, header=False):
+        wswrite_POArticulation.cell(row=startrow, column=1).value=sno
+        cindex=0
+        for c in range(2, 2+config['PO']+config['PSO']):
+            wswrite_POArticulation.cell(row=startrow, column=c).value=final_po_articulation.iloc[sno-1, cindex]
+            cindex+=1
+        startrow+=1
+        sno+=1
+
+    cellstyle_range(wswrite_POArticulation[f'A3:{get_column_letter(2+config['PO']+config['PSO'])}{startrow-1}'], alignment=True, border=True, alternate=['e6b8b7','f2dcdb'])
+
+    #set column width for second column to be 12
+    wswrite_POArticulation.column_dimensions['B'].width = 12
+    
+
+
+            
+
+
+
+    # =================================================================================================
+    # =================================================================================================
     unique_code = str(uuid.uuid4()).split("-")[0]
     file_name = f"final_{unique_code}.xlsx"
     for ws in wbwrite.sheetnames:
@@ -335,6 +432,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
         for row in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=ws.max_column):
             for cell in row:
                 cell.protection = Protection(locked=True)
+
 
     wbwrite.save(os.path.join(output_dir_path, file_name))
     #return file_name
