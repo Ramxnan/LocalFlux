@@ -229,9 +229,10 @@
             width: 100%;
             height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #fff; /* Change this to your background color */
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
             z-index: 1000;
         }
 
@@ -239,6 +240,15 @@
             width: 100px; /* Adjust size as needed */
             height: 100px; /* Adjust size as needed */
             animation: spin 2s linear infinite;
+        }
+
+        #preloader-text {
+            margin-top: 20px;
+            font-size: 30px; /* Adjust as needed */
+            color: #6b61e8; /* Adjust as needed */
+            text-align: center;
+            /* make it bold */
+            font-weight: bold;
         }
 
         @keyframes spin {
@@ -256,7 +266,12 @@
 
 <body>
     <div id="preloader">
-        <img src="{% static 'assets/LocalFlux_Assets/localflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+        <div>
+            <img src="{% static 'assets/LocalFlux_Assets/localflux-favicon-color.png' %}" alt="Preloader Logo" id="preloader-logo">
+        </div>
+        <div>
+            <p id="preloader-text">Please wait while AlgoFlux is working hard on your request :)</p>
+        </div>
     </div>
         <!-- Message Modal -->
         <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
@@ -742,11 +757,21 @@
 
     </script>
     <script>
-            window.addEventListener('load', function() {
+        // Show the preloader on form submission
+        document.getElementById('BatchLeft').addEventListener('submit', function() {
+            document.getElementById('preloader').style.display = 'flex';
+            document.getElementById('content').style.display = 'none';
+        });
+        document.getElementById('BranchLeft').addEventListener('submit', function() {
+            document.getElementById('preloader').style.display = 'flex';
+            document.getElementById('content').style.display = 'none';
+        });
+
+        // Hide the preloader once the page loads
+        window.addEventListener('load', function() {
             document.getElementById('preloader').style.display = 'none';
             document.getElementById('content').style.display = 'block';
-            });
-
+        });
     </script>
 
 
