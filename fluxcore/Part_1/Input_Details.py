@@ -151,7 +151,17 @@ def CO_PO_Table(data,config,aw,id_page=False, copy=False):
         #set column width to 13
         aw.column_dimensions[f"{get_column_letter(popso+4)}"].width = 13
 
+    cellstyle_range(aw[f"D2:{get_column_letter(config['PO']+config['PSO']+1+3)}2"], bold=True, alignment=True, border=True, fill="9bbb59")
+
+
+    aw[f'D{3+data["Number_of_COs"]}']=data["Subject_Code"]
+    for popso in range(1,config["PO"]+config["PSO"]+1):
+        range_string = f"{get_column_letter(popso+4)}3:{get_column_letter(popso+4)}{2+data['Number_of_COs']}"
+        aw[f"{get_column_letter(popso+4)}{3+data['Number_of_COs']}"]=f'=IF(SUM({range_string})=0,"",AVERAGE({range_string}))'
+
+    cellstyle_range(aw[f"D{3+data['Number_of_COs']}:{get_column_letter(config['PO']+config['PSO']+1+3)}{3+data['Number_of_COs']}"],border=True, alignment=True, bold=True, fill="92d050")
     cellstyle_range(aw[f"D3:{get_column_letter(config['PO']+config['PSO']+1+3)}{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'], alignment=True)
+
     
     if id_page:
         #set conditional formatting for empty cells   

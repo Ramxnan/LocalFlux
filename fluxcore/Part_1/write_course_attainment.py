@@ -116,6 +116,7 @@ def write_course_attainment(data,Component_Details,config,aw):
 
     aw.merge_cells(start_row=start_row_ca+2, start_column=start_col_ca+10, end_row=start_row_ca+3, end_column=start_col_ca+10)
     # aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+2}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell=aw[f'{get_column_letter(start_col_ca+10)}{start_row_ca+2}']
     target_cell.value=(
         f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
         f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
@@ -128,6 +129,7 @@ def write_course_attainment(data,Component_Details,config,aw):
     aw[f'{get_column_letter(start_col_ca+11)}{start_row_ca+3}'] = 'Attainment'
 
     # aw[f'{get_column_letter(start_col_ca+12)}{start_row_ca+3}'] = 'Level Of Attainment (0-40 --> 1, 40-60 ---> 2, 60-100---> 3)'
+    target_cell=aw[f'{get_column_letter(start_col_ca+12)}{start_row_ca+3}']
     target_cell.value=(
         f'=CONCATENATE("Level Of Attainment (", {start_range_1}, "-", {end_range_1}, " --> ", {map_1}, ", ", '
         f'{start_range_2}, "-", {end_range_2}, " --> ", {map_2}, ", ", '
