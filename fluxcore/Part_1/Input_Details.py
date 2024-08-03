@@ -99,7 +99,7 @@ def input_detail(data,Component_Details,aw,id_page=False, copy=False):
                 aw.conditional_formatting.add(
                     f'B{startrow}',
                     #greater than 100 or less than 0
-                    FormulaRule(formula=[f'OR(B{startrow}>=100,B{startrow}<=0)'], stopIfTrue=False, fill=red_fill))
+                    FormulaRule(formula=[f'OR(B{startrow}>100,B{startrow}<0)'], stopIfTrue=False, fill=red_fill))
         
         colour_table_Input_Details(aw)
 
