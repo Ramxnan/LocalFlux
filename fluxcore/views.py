@@ -40,12 +40,12 @@ def homepage(request):
     return render(request, 'index.html')
 
 def read_config():
-    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'config.json')
     with open(config_file, 'r') as f:
         return json.load(f)
     
 def configure_outcomes(request):
-    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user', 'config.json')
     if not os.path.exists(config_file):
         with open(config_file, 'w') as f:
             #dump null json
@@ -71,7 +71,7 @@ def configure_outcomes(request):
 
 def expiration(request):
     if request.method == 'POST':
-        config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+        config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user',  'config.json')
         with open(config_file, 'r') as f:
             config = json.load(f)
 
@@ -91,7 +91,7 @@ def expiration(request):
 
 
 def dashboard(request):
-    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user',  'config.json')
     if not os.path.exists(config_file):
         with open(config_file, 'w') as f:
             #dump null json and 'dod' as today's date in ddmmyy format
@@ -175,7 +175,7 @@ def logout(request):
 #============================Template Generation========================================================
 @csrf_exempt
 def submit(request):
-    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user',  'config.json')
     with open(config_file, 'r') as f:
         config = json.load(f)
 
@@ -274,7 +274,7 @@ def delete_file_generated(request, file_name):
  
 @csrf_exempt
 def upload_multiple_files_branch(request):
-    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user',  'config.json')
     with open(config_file, 'r') as f:
         config = json.load(f)
 
@@ -379,7 +379,7 @@ def delete_folder_branch(request, folder_name):
 
 @csrf_exempt
 def upload_multiple_files_batch(request):
-    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'config.json')
+    config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user',  'config.json')
     with open(config_file, 'r') as f:
         config = json.load(f)
 

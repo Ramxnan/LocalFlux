@@ -123,13 +123,13 @@ def driver_part3(input_dir_path, output_dir_path,config):
     print("Processing PO Calculation")
     wswrite_POCalculation=wbwrite["PO_calculations"]
 
-    wswrite_POCalculation.merge_cells(f'A1:{get_column_letter(3+config['PO']+config['PSO'])}1')
+    wswrite_POCalculation.merge_cells(f"A1:{get_column_letter(3+config['PO']+config['PSO'])}1")
     wswrite_POCalculation["A1"]="PO Attainment"
-    cellstyle_range(wswrite_POCalculation[f'A1:{get_column_letter(3+config['PO']+config['PSO'])}1'], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
+    cellstyle_range(wswrite_POCalculation[f"A1:{get_column_letter(3+config['PO']+config['PSO'])}1"], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
 
-    wswrite_POCalculation.merge_cells(f'A2:{get_column_letter(3+config['PO']+config['PSO'])}2')
+    wswrite_POCalculation.merge_cells(f"A2:{get_column_letter(3+config['PO']+config['PSO'])}2")
     wswrite_POCalculation["A2"]="Direct Attainment at PO level"
-    cellstyle_range(wswrite_POCalculation[f'A2:{get_column_letter(3+config['PO']+config['PSO'])}2'], size=14, bold=True, alignment=True, border=True)
+    cellstyle_range(wswrite_POCalculation[f"A2:{get_column_letter(3+config['PO']+config['PSO'])}2"], size=14, bold=True, alignment=True, border=True)
  
     wswrite_POCalculation["A3"]="S.No"   
     wswrite_POCalculation["B3"]="Course Code"
@@ -144,7 +144,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
         else:
             wswrite_POCalculation.cell(row=po_data_row, column=popso+po_data_col).value=f"PSO{popso-config['PO']}"
 
-    cellstyle_range(wswrite_POCalculation[f'A{po_data_row}:{get_column_letter(3+config['PO']+config['PSO'])}{po_data_row}'], bold=True, alignment=True, border=True, fill='6cb266', font_color='ffffff')
+    cellstyle_range(wswrite_POCalculation[f"A{po_data_row}:{get_column_letter(3+config['PO']+config['PSO'])}{po_data_row}"], bold=True, alignment=True, border=True, fill='6cb266', font_color='ffffff')
 
     columns=[]
     columns.append("Academic Year")
@@ -229,7 +229,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
     for key, value in dataframes_dict.items():
         wswrite_POCalculation.merge_cells(start_row=startrow, start_column=startcol, end_row=startrow, end_column=startcol+config['PO']+config['PSO']+2)
         wswrite_POCalculation.cell(row=startrow, column=startcol).value=f"{key[0]} {key[1]}"
-        cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], bold=True, alignment=True, fill='b7dee8', border=True)
+        cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], bold=True, alignment=True, fill='b7dee8', border=True)
 
         startrow+=1
         ridex=0
@@ -250,7 +250,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
                     wswrite_POCalculation.cell(row=startrow, column=startcol).value="Total"
                     for cfin in range (4, 4+config['PO']+config['PSO']):
                         wswrite_POCalculation.cell(row=startrow, column=cfin).value=f"=SUM({get_column_letter(cfin)}{startrow-ridex-1}:{get_column_letter(cfin)}{startrow-1})"
-                    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], alignment=True, border=True, fill='fcd5b4', bold=True)
+                    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], alignment=True, border=True, fill='fcd5b4', bold=True)
                     startrow+=1
 
                 cindex+=1
@@ -260,9 +260,9 @@ def driver_part3(input_dir_path, output_dir_path,config):
             ridex+=1
 
     # #================================================================================================
-    wswrite_POCalculation.merge_cells(f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}')
+    wswrite_POCalculation.merge_cells(f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}")
     wswrite_POCalculation[f"A{startrow}"]="Indirect Assessment At PO Level"
-    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], size=14, bold=True, alignment=True, border=True)
+    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], size=14, bold=True, alignment=True, border=True)
   
     po_data_col=3
     startrow+=1
@@ -273,7 +273,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
             wswrite_POCalculation.cell(row=startrow, column=popso+po_data_col).value=f"PO{popso}"
         else:
             wswrite_POCalculation.cell(row=startrow, column=popso+po_data_col).value=f"PSO{popso-config['PO']}"
-    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], bold=True, alignment=True, fill='6CB266', border=True, font_color='ffffff')
+    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], bold=True, alignment=True, fill='6CB266', border=True, font_color='ffffff')
     
     startrow+=1
     wswrite_POCalculation[f'A{startrow}']=f'{sno}.'
@@ -287,7 +287,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
     wswrite_POCalculation.merge_cells(start_row=startrow, end_row=startrow, start_column=2, end_column=3)
     wswrite_POCalculation[f'B{startrow}']="Recruiters Feedback"
     
-    cellstyle_range(wswrite_POCalculation[f'A{startrow-1}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], alignment=True, border=True)
+    cellstyle_range(wswrite_POCalculation[f"A{startrow-1}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], alignment=True, border=True)
 
     startrow+=1
     wswrite_POCalculation.merge_cells(start_row=startrow, end_row=startrow, start_column=1, end_column=3)
@@ -295,15 +295,15 @@ def driver_part3(input_dir_path, output_dir_path,config):
     for colind in range(4,4+config['PO']+config['PSO']):
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}']=f'=IFERROR(AVERAGE({get_column_letter(colind)}{startrow-2}:{get_column_letter(colind)}{startrow-1}),0)'
 
-    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], alignment=True, border=True, fill='fcd5b4', bold=True)
+    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], alignment=True, border=True, fill='fcd5b4', bold=True)
 
 
     # #================================================================================================
         
     startrow+=2
-    wswrite_POCalculation.merge_cells(f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}')
+    wswrite_POCalculation.merge_cells(f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}")
     wswrite_POCalculation[f"A{startrow}"]='Total PO Attainment'
-    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], size=18, bold=True, alignment=True, fill='95b3d7', border=True)
+    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], size=18, bold=True, alignment=True, fill='95b3d7', border=True)
 
     startrow+=1
     wswrite_POCalculation.cell(row=startrow, column=1).fill = PatternFill(start_color='6CB266', end_color='6CB266', fill_type='solid')
@@ -316,7 +316,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
             wswrite_POCalculation.cell(row=startrow, column=popso+po_data_col).value=f"PO{popso}"
         else:
             wswrite_POCalculation.cell(row=startrow, column=popso+po_data_col).value=f"PSO{popso-config['PO']}"
-    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], bold=True, alignment=True, border=True, font_color='ffffff', fill='6CB266')
+    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], bold=True, alignment=True, border=True, font_color='ffffff', fill='6CB266')
 
     startrow+=1
     wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
@@ -352,14 +352,14 @@ def driver_part3(input_dir_path, output_dir_path,config):
     for colind in range(4,4+config['PO']+config['PSO']):
         wswrite_POCalculation[f'{get_column_letter(colind)}{startrow}'].value=f'={get_column_letter(colind)}{startrow-7}'
 
-    cellstyle_range(wswrite_POCalculation[f'A{startrow-3}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], alignment=True, border=True)
+    cellstyle_range(wswrite_POCalculation[f"A{startrow-3}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], alignment=True, border=True)
 
     startrow+=1
     wswrite_POCalculation.merge_cells(f'A{startrow}:C{startrow}')
     wswrite_POCalculation[f'A{startrow}']="PO Attainment for the Program"
     wswrite_POCalculation[f'A{startrow}'].font = Font(bold=True, size=14)
     
-    cellstyle_range(wswrite_POCalculation[f'A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}'], alignment=True, border=True, bold=True)
+    cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], alignment=True, border=True, bold=True)
 
     #set column width for second column to be 12
     wswrite_POCalculation.column_dimensions['B'].width = 12
@@ -374,9 +374,9 @@ def driver_part3(input_dir_path, output_dir_path,config):
     print("Processing PO Articulation")
     wswrite_POArticulation=wbwrite["PO_Articulation"]
     #Merge cells 1 to config['PO']+config['PSO']
-    wswrite_POArticulation.merge_cells(f'A1:{get_column_letter(2+config['PO']+config['PSO'])}1')
+    wswrite_POArticulation.merge_cells(f"A1:{get_column_letter(2+config['PO']+config['PSO'])}1")
     wswrite_POArticulation["A1"]="PO Articulation"
-    cellstyle_range(wswrite_POArticulation[f'A1:{get_column_letter(2+config['PO']+config['PSO'])}1'], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
+    cellstyle_range(wswrite_POArticulation[f"A1:{get_column_letter(2+config['PO']+config['PSO'])}1"], size=18, bold=True, alignment=True, fill='ffe74e', border=True)
 
     wswrite_POArticulation["A2"]="S.No"
     wswrite_POArticulation["B2"]="Course Code"
@@ -386,7 +386,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
         else:
             wswrite_POArticulation.cell(row=2, column=popso+2).value=f"PSO{popso-config['PO']}"
 
-    cellstyle_range(wswrite_POArticulation[f'A2:{get_column_letter(2+config['PO']+config['PSO'])}2'], bold=True, alignment=True, border=True, fill='6cb266', font_color='ffffff')
+    cellstyle_range(wswrite_POArticulation[f"A2:{get_column_letter(2+config['PO']+config['PSO'])}2"], bold=True, alignment=True, border=True, fill='6cb266', font_color='ffffff')
 
 
     columns=[]
@@ -450,7 +450,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
         startrow+=1
         sno+=1
 
-    cellstyle_range(wswrite_POArticulation[f'A3:{get_column_letter(2+config['PO']+config['PSO'])}{startrow-1}'], alignment=True, border=True, alternate=['e6b8b7','f2dcdb'])
+    cellstyle_range(wswrite_POArticulation[f"A3:{get_column_letter(2+config['PO']+config['PSO'])}{startrow-1}"], alignment=True, border=True, alternate=['e6b8b7','f2dcdb'])
 
     #set column width for second column to be 12
     wswrite_POArticulation.column_dimensions['B'].width = 12
