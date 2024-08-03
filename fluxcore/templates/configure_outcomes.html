@@ -139,9 +139,8 @@
      <script>
         function validateForm() {
             var num_pos = document.getElementById('num_pos').value;
-            var num_psos = document.getElementById('num_psos').value;
 
-            if (num_pos <= 0 || num_psos <= 0) {
+            if (num_pos <= 0) {
                 alert("Please enter positive integers greater than 0.");
                 return false;
             }
