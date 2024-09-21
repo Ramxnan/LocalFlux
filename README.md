@@ -10,54 +10,28 @@ LocalFlux is a dynamic and adaptive AI solution designed to streamline the accre
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
-
-- **Python**: Make sure Python is installed on your system. You can download it from [python.org](https://www.python.org/downloads/).
+No prerequisites are required as Python is included in the repository.
 
 ## Installation
 
 Follow these steps to set up the LocalFlux project on your local machine:
 
-### Manual Setup
+### Quick Setup
 
-If you prefer to set up the project manually, follow these steps:
+1. **Download the Repository**:
 
-1. **Clone the Repository**:
+   Download the repository from GitHub and extract it to a folder on your local machine.
 
+   Alternatively, you can clone the repository:
    ```sh
    git clone https://github.com/Ramxnan/LocalFlux.git
    cd LocalFlux
    ```
 
-2. **Create a Virtual Environment**:
-
-   ```sh
-   python -m venv venv
-   ```
-
-3. **Activate the Virtual Environment**:
+2. **Run the Setup Script**:
 
    - **Windows**:
-     ```sh
-     venv\Scripts\activate
-     ```
-
-   - **macOS/Linux**:
-     ```sh
-     source venv/bin/activate
-     ```
-
-4. **Install Dependencies**:
-
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-5. **Run the Django Server**:
-
-   ```sh
-   python manage.py runserver
-   ```
+     Double-click on the `run.bat` file to start the setup and run the Django server.
 
    The server will start at `http://127.0.0.1:8000/`.
 
