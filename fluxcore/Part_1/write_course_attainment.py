@@ -214,14 +214,15 @@ def write_course_attainment(data,Component_Details,config,aw):
         # aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>0,{get_column_letter(start_col_ca+3)}{start}<40),1,IF(AND({get_column_letter(start_col_ca+3)}{start}>=40,{get_column_letter(start_col_ca+3)}{start}<60),2,IF(AND({get_column_letter(start_col_ca+3)}{start}>=60,{get_column_letter(start_col_ca+3)}{start}<=100),3,"0")))'
         # aw.cell(row=start, column=start_col_ca+4).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
         target_cell=aw.cell(row=start, column=start_col_ca+4)
-        target_cell.value=(
-            f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_1},'
-            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_1}),{map_1},'
-            f'IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_2},'
-            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_2}),{map_2},'
-            f'IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_3},'
-            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_3}),{map_3},"0")))'
+        target_cell.value = (
+            f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>={start_range_1}, '
+            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_1}), {map_1}, '
+            f'IF(AND({get_column_letter(start_col_ca+3)}{start}>{end_range_1}, '
+            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_2}), {map_2}, '
+            f'IF(AND({get_column_letter(start_col_ca+3)}{start}>{end_range_2}, '
+            f'{get_column_letter(start_col_ca+3)}{start}<={end_range_3}), {map_3}, "0")))'
         )
+
 
 
         col=(data["Number_of_COs"]*internal_components_number) + (1*internal_components_number) + 2 + rowindex
@@ -234,16 +235,22 @@ def write_course_attainment(data,Component_Details,config,aw):
         target_cell.value=(
             f'=IF(AND({get_column_letter(start_col_ca+5)}{start}>={start_range_1},'
             f'{get_column_letter(start_col_ca+5)}{start}<={end_range_1}),{map_1},'
-            f'IF(AND({get_column_letter(start_col_ca+5)}{start}>={start_range_2},'
+            f'IF(AND({get_column_letter(start_col_ca+5)}{start}>{end_range_1},'
             f'{get_column_letter(start_col_ca+5)}{start}<={end_range_2}),{map_2},'
-            f'IF(AND({get_column_letter(start_col_ca+5)}{start}>={start_range_3},'
+            f'IF(AND({get_column_letter(start_col_ca+5)}{start}>{end_range_2},'
             f'{get_column_letter(start_col_ca+5)}{start}<={end_range_3}),{map_3},"0")))'
         )
 
 
         SEE_attainment = f'{get_column_letter(start_col_ca+3)}{start}'
         CIE_attainment = f'{get_column_letter(start_col_ca+5)}{start}'
-        calculation = f'{SEE_attainment}*(B16/100)+{CIE_attainment}*(B15/100)'
+        if_formula = (
+            f'IF(OR(VALUE({SEE_attainment})=0, VALUE({CIE_attainment})=0), '
+            f'IF(VALUE({SEE_attainment})=0, VALUE({CIE_attainment}), VALUE({SEE_attainment})), '
+            f'VALUE({SEE_attainment})*(B16/100) + VALUE({CIE_attainment})*(B15/100))'
+        )
+        calculation = if_formula
+
 
         formula = f'={calculation}'
         aw.cell(row=start, column=start_col_ca+7).value = formula
@@ -254,9 +261,9 @@ def write_course_attainment(data,Component_Details,config,aw):
         target_cell.value=(
             f'=IF(AND({get_column_letter(start_col_ca+7)}{start}>={start_range_1},'
             f'{get_column_letter(start_col_ca+7)}{start}<={end_range_1}),{map_1},'
-            f'IF(AND({get_column_letter(start_col_ca+7)}{start}>={start_range_2},'
+            f'IF(AND({get_column_letter(start_col_ca+7)}{start}>{end_range_1},'
             f'{get_column_letter(start_col_ca+7)}{start}<={end_range_2}),{map_2},'
-            f'IF(AND({get_column_letter(start_col_ca+7)}{start}>={start_range_3},'
+            f'IF(AND({get_column_letter(start_col_ca+7)}{start}>{end_range_2},'
             f'{get_column_letter(start_col_ca+7)}{start}<={end_range_3}),{map_3},"0")))'
         )
 
@@ -269,9 +276,9 @@ def write_course_attainment(data,Component_Details,config,aw):
         target_cell.value=(
             f'=IF(AND({get_column_letter(start_col_ca+9)}{start}>={start_range_1},'
             f'{get_column_letter(start_col_ca+9)}{start}<={end_range_1}),{map_1},'
-            f'IF(AND({get_column_letter(start_col_ca+9)}{start}>={start_range_2},'
+            f'IF(AND({get_column_letter(start_col_ca+9)}{start}>{end_range_1},'
             f'{get_column_letter(start_col_ca+9)}{start}<={end_range_2}),{map_2},'
-            f'IF(AND({get_column_letter(start_col_ca+9)}{start}>={start_range_3},'
+            f'IF(AND({get_column_letter(start_col_ca+9)}{start}>{end_range_2},'
             f'{get_column_letter(start_col_ca+9)}{start}<={end_range_3}),{map_3},"0")))'
         )
 
@@ -286,12 +293,12 @@ def write_course_attainment(data,Component_Details,config,aw):
         # aw.cell(row=start, column=start_col_ca+12).value=f'=IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_1},{get_column_letter(start_col_ca+3)}{start}<{end_range_1}),{map_1},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_2},{get_column_letter(start_col_ca+3)}{start}<{end_range_2}),{map_2},IF(AND({get_column_letter(start_col_ca+3)}{start}>{start_range_3},{get_column_letter(start_col_ca+3)}{start}<{end_range_3}),{map_3},"0")))'
         target_cell=aw.cell(row=start, column=start_col_ca+12)
         target_cell.value=(
-            f'=IF(AND({get_column_letter(start_col_ca+11)}{start}>{start_range_1},'
-            f'{get_column_letter(start_col_ca+11)}{start}<{end_range_1}),{map_1},'
-            f'IF(AND({get_column_letter(start_col_ca+11)}{start}>{start_range_2},'
-            f'{get_column_letter(start_col_ca+11)}{start}<{end_range_2}),{map_2},'
-            f'IF(AND({get_column_letter(start_col_ca+11)}{start}>{start_range_3},'
-            f'{get_column_letter(start_col_ca+11)}{start}<{end_range_3}),{map_3},"0")))'
+            f'=IF(AND({get_column_letter(start_col_ca+11)}{start}>={start_range_1},'
+            f'{get_column_letter(start_col_ca+11)}{start}<={end_range_1}),{map_1},'
+            f'IF(AND({get_column_letter(start_col_ca+11)}{start}>{end_range_1},'
+            f'{get_column_letter(start_col_ca+11)}{start}<={end_range_2}),{map_2},'
+            f'IF(AND({get_column_letter(start_col_ca+11)}{start}>{end_range_2},'
+            f'{get_column_letter(start_col_ca+11)}{start}<={end_range_3}),{map_3},"0")))'
         )
 
 
