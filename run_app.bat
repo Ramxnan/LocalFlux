@@ -19,17 +19,6 @@ if exist "%PYTHON_PATH%" (
     goto end
 )
 
-REM Install required packages
-echo Installing required packages...
-"%PYTHON_DIR%"\python.exe -m pip install -r requirements.txt
-if %errorlevel% neq 0 (
-    echo Failed to install required packages
-    pause
-    goto end
-)
-echo Required packages installed
-echo ----------------------------------------
-
 REM Run the Django server
 echo Running the Django application...
 start "" "http://127.0.0.1:8000"
@@ -41,6 +30,5 @@ if %errorlevel% neq 0 (
 )
 echo ----------------------------------------
 
-:end
 endlocal
 pause
