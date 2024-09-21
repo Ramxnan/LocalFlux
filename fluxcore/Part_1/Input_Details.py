@@ -266,16 +266,16 @@ def indirect_co_assessment(data,aw,id_page=False,copy=False, ca_page=False):
         # Add range and mapping data
         startrow += 1
         aw[f'G{startrow}'] = 0
-        aw[f'H{startrow}'] = 39
+        aw[f'H{startrow}'] = 40
         aw[f'I{startrow}'] = 1
 
         startrow += 1
-        aw[f'G{startrow}'] = 40
-        aw[f'H{startrow}'] = 59
+        aw[f'G{startrow}'] = 40.1
+        aw[f'H{startrow}'] = 60
         aw[f'I{startrow}'] = 2
 
         startrow += 1
-        aw[f'G{startrow}'] = 60
+        aw[f'G{startrow}'] = 60.1
         aw[f'H{startrow}'] = 100
         aw[f'I{startrow}'] = 3
 
