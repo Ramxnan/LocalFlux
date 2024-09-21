@@ -190,27 +190,33 @@
   <script>
     function getCurrentDateCode() {
         const date = new Date();
-        let day = String(date.getDate()).padStart(2, '0');
-        // set d0 as the first digit of the day
-        const d0 = (day[0]%10)+1;
-        const d1 = (day[1]%10)+1;
-        // day is str(d0) + str(d1)
-        day = d0.toString() + d1.toString();
-        let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-        // set m0 as the first digit of the month
-        const m0 = (month[0]%10)+1;
-        const m1 = (month[1]%10)+1;
-        month = m0.toString() + m1.toString();
-        let year = String(date.getFullYear()).slice(2); // Get last two digits of the year
-        // set y0 as the first digit of the year
-        const y0 = (year[0]%10)+1;
-        const y1 = (year[1]%10)+1;
-        year = y0.toString() + y1.toString();
-
-        //display the code
-        // console.log(day + month + year);
         
-        return day + month + year;
+        // Get day and increment each digit by 1
+        let day = String(date.getDate()).padStart(2, '0');
+        const d0 = (parseInt(day[0]) + 1) % 10;
+        const d1 = (parseInt(day[1]) + 1) % 10;
+        day = d0.toString() + d1.toString();
+        // console.log("Day:", day);
+        
+        // Get month and increment each digit by 1
+        let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const m0 = (parseInt(month[0]) + 1) % 10;
+        const m1 = (parseInt(month[1]) + 1) % 10;
+        month = m0.toString() + m1.toString();
+        // console.log("Month:", month);
+        
+        // Get last two digits of the year and increment each digit by 1
+        let year = String(date.getFullYear()).slice(2); // Get last two digits of the year
+        const y0 = (parseInt(year[0]) + 1) % 10;
+        const y1 = (parseInt(year[1]) + 1) % 10;
+        year = y0.toString() + y1.toString();
+        // console.log("Year:", year);
+        
+        // Display the final code: incremented day, month, and year
+        const dateCode = day + month + year;
+        console.log("Date Code:", dateCode);
+        
+        return dateCode;
     }
 
     function verifyCode() {
