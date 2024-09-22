@@ -16,3 +16,8 @@ def split_file_name(value):
 def split_user_name(value):
     parts = value.rsplit('@', 1)
     return parts[0] if parts else value
+
+@register.filter(name='startswith')
+def startswith(value):
+    """Return True if the value starts with the argument."""
+    return value.startswith("Combined")

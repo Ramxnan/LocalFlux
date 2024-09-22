@@ -23,7 +23,8 @@ import shutil
 from django.urls import reverse
 import json
 from datetime import datetime, timedelta
-
+import time
+import psutil # type: ignore
 
 
 from .Part_1.driver import driver_part1
@@ -271,7 +272,12 @@ def delete_file_generated(request, file_name):
 #=======================================================================================================
 #=======================================================================================================
 #============================Branch Calculation========================================================
- 
+
+def delete_folder(unique_folder_path):
+    if os.path.exists(unique_folder_path):
+        shutil.rmtree(unique_folder_path)
+        return
+
 @csrf_exempt
 def upload_multiple_files_branch(request):
     config_file = os.path.join(settings.MEDIA_ROOT, 'storage', 'user',  'config.json')
@@ -294,16 +300,17 @@ def upload_multiple_files_branch(request):
         fs = FileSystemStorage(location=unique_folder_path)
         
         for uploaded_file in uploaded_files:
-            fs.save(uploaded_file.name, uploaded_file)
+            with fs.open(uploaded_file.name, 'wb+') as destination:
+                destination.write(uploaded_file.read())
+                destination.close()
+
         message = driver_part2(unique_folder_path, unique_folder_path, config)
         message=message[0]
+        time.sleep(2)
         if "success" in message:
             messages.success(request, message)
         else:
             messages.error(request, message)
-            # Optionally, delete the folder
-            if os.path.exists(unique_folder_path):
-                shutil.rmtree(unique_folder_path)
 
         return redirect('/dashboard/?show=branch')  # This assumes you want to redirect to a new request where the message will be displayed
     else:
