@@ -4,20 +4,23 @@ setlocal
 REM Change to the directory where the script is located
 cd /d %~dp0
 
+REM Check if this is a Git repository before running git pull
+if exist ".git" (
+    echo Updating the repository...
+    git pull
+    if %errorlevel% neq 0 (
+        echo Failed to update the repository
+        pause
+        goto end
+    )
+) else (
+    echo No .git directory found. Skipping git pull.
+)
+
+
 REM Set the path to the local Python executable
 set PYTHON_DIR=%cd%\python
 set PYTHON_PATH=%PYTHON_DIR%\python.exe
-
-REM Check if local Python is installed
-echo Checking if Python is installed...
-if exist "%PYTHON_PATH%" (
-    echo Local Python is already installed at %PYTHON_PATH%
-    echo ----------------------------------------
-) else (
-    echo Embedded Python is not found, please ensure the python folder exists in the repository.
-    pause
-    goto end
-)
 
 REM Run the Django server
 echo Running the Django application...
