@@ -106,10 +106,10 @@ def driver_part3(input_dir_path, output_dir_path,config):
                     try:
                         cell = wsread_printout.cell(row=row, column=col)
                         value = get_merged_cell_value(wsread_printout, cell)
-                        if value is None:
-                            print(f"None value at Row: {row}, Column: {col} in file {file}")
+                        # if value is None:
+                        #     print(f"None value at Row: {row}, Column: {col} in file {file}")
                         wswrite_printouts.cell(row=startrow - 1, column=col).value = value
-                        print(f"Row: {startrow - 1}, Column: {col}, Value: {value}")
+                        # print(f"Row: {startrow - 1}, Column: {col}, Value: {value}")
                     except Exception as e:
                         print(f"Error in {file} at row {row} and column {col}: {e}")
                 startrow += 1

@@ -294,7 +294,10 @@ def upload_multiple_files_branch(request):
         branch_directory = os.path.join(user_directory, 'Branch_Calculation')
         
         unique_id = str(uuid.uuid4()).split('-')[0]
-        unique_folder_name = f"{num_files}Files_BranchCalculation_{unique_id}"
+        fname = uploaded_files[0].name
+        unique_folder_name = '_'.join(fname.split('_')[1:-1]) + f"_{unique_id}"
+        print(unique_folder_name)
+    
         unique_folder_path = os.path.join(branch_directory, unique_folder_name)
         os.makedirs(unique_folder_path, exist_ok=True)
         fs = FileSystemStorage(location=unique_folder_path)
@@ -402,7 +405,10 @@ def upload_multiple_files_batch(request):
         batch_directory = os.path.join(user_directory, 'Batch_Calculation')
         
         unique_id = str(uuid.uuid4()).split('-')[0]
-        unique_folder_name = f"{num_files}Files_BatchCalculation_{unique_id}"
+        #get the first file name
+        fname = uploaded_files[0].name
+        unique_folder_name = '_'.join(fname.split('_')[1:3]) + f"_{unique_id}"
+        print(unique_folder_name)
         unique_folder_path = os.path.join(batch_directory, unique_folder_name)
         os.makedirs(unique_folder_path, exist_ok=True)
         fs = FileSystemStorage(location=unique_folder_path)
