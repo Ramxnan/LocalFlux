@@ -132,7 +132,7 @@ def CO_PO_Table(data,config,aw,id_page=False, copy=False):
     aw.merge_cells(start_row=1, start_column=4, end_row=1, end_column=config["PO"]+config["PSO"]+1+3)
     aw['D1']="CO-PO Mapping"
     cellstyle(aw['D1'], bold=True, alignment=True, border=True, fill="ffe74e")
-   
+
     aw["D2"]="COs\\POs"
     cellstyle(aw["D2"], bold=True, alignment=True, border=True, fill="9bbb59")
 
@@ -157,7 +157,7 @@ def CO_PO_Table(data,config,aw,id_page=False, copy=False):
     aw[f'D{3+data["Number_of_COs"]}']=data["Subject_Code"]
     for popso in range(1,config["PO"]+config["PSO"]+1):
         range_string = f"{get_column_letter(popso+4)}3:{get_column_letter(popso+4)}{2+data['Number_of_COs']}"
-        aw[f"{get_column_letter(popso+4)}{3+data['Number_of_COs']}"]=f'=IF(SUM({range_string})=0,"",AVERAGE({range_string}))'
+        aw[f"{get_column_letter(popso+4)}{3+data['Number_of_COs']}"] = (f'=IF(SUM({range_string})=0,"",AVERAGEIF({range_string},">0"))')
 
     cellstyle_range(aw[f"D{3+data['Number_of_COs']}:{get_column_letter(config['PO']+config['PSO']+1+3)}{3+data['Number_of_COs']}"],border=True, alignment=True, bold=True, fill="92d050")
     cellstyle_range(aw[f"D3:{get_column_letter(config['PO']+config['PSO']+1+3)}{2+data['Number_of_COs']}"],border=True, alternate=['ebf1de','ffffff'], alignment=True)
@@ -186,7 +186,7 @@ def CO_PO_Table(data,config,aw,id_page=False, copy=False):
         for nco in range(1,data["Number_of_COs"]+1):
             # for popso in range(1,12+5+1):
             for popso in range(1,config["PO"]+config["PSO"]+1):
-                aw[f"{get_column_letter(popso+4)}{nco+2}"]=f"='{data['Section']}_Input_Details'!{get_column_letter(popso+4)}{nco+2}"
+                aw[f"{get_column_letter(popso+4)}{nco+2}"] = f'=IF({data["Section"]}_Input_Details!{get_column_letter(popso+4)}{nco+2}="", "", {data["Section"]}_Input_Details!{get_column_letter(popso+4)}{nco+2})'
                 cellstyle(aw[f"{get_column_letter(popso+4)}{nco+2}"], alignment=True, bold=True)
             
     return aw
@@ -213,7 +213,7 @@ def indirect_co_assessment(data,aw,id_page=False,copy=False, ca_page=False):
     aw[f"D{data['Number_of_COs']+6}"]="COs"    
     aw[f"E{data['Number_of_COs']+6}"]="Indirect %"
     cellstyle_range(aw[f"D{data['Number_of_COs']+6}:E{data['Number_of_COs']+6}"], bold=True, alignment=True, border=True, fill="f79646")
-   
+
     
     for nco in range(1,data["Number_of_COs"]+1):
         aw[f"D{nco+data['Number_of_COs']+6}"]=f"CO{nco}"
@@ -317,7 +317,7 @@ def indirect_co_assessment(data,aw,id_page=False,copy=False, ca_page=False):
                 #cell.fill = purple_fill
 
         
-               
+
 
                 
 
