@@ -40,7 +40,7 @@ def printout(aw, data,config,start_row,copy=False,numco=None):
     # Setting value, font, and alignment for "Course Name" cell
     cell_reference = f"{get_column_letter(column)}{row}"
     aw[cell_reference] = "Course Name"
-     
+
     aw.merge_cells(start_row=row+3, end_row=row+3+numco-1, start_column=column,  end_column=column)
 
     aw.column_dimensions[f"{get_column_letter(column)}"].width = 8.43
