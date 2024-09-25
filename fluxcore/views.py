@@ -160,8 +160,8 @@ def dashboard(request):
 
 
     return render(request, 'dashboard.html', {'Generated_Templates': Generated_Templates, 
-                                                  'Branch_Calculation': Branch_Calculation,
-                                                    'Batch_Calculation': Batch_Calculation})
+                                                'Branch_Calculation': Branch_Calculation,
+                                                'Batch_Calculation': Batch_Calculation})
 
 def logout(request):
     auth.logout(request)
@@ -311,6 +311,9 @@ def upload_multiple_files_branch(request):
             messages.success(request, message)
         else:
             messages.error(request, message)
+            # Optionally, delete the folder
+            if os.path.exists(unique_folder_path):
+                shutil.rmtree(unique_folder_path)
 
         return redirect('/dashboard/?show=branch')  # This assumes you want to redirect to a new request where the message will be displayed
     else:
