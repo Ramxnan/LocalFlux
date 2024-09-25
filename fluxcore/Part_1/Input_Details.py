@@ -186,7 +186,7 @@ def CO_PO_Table(data,config,aw,id_page=False, copy=False):
         for nco in range(1,data["Number_of_COs"]+1):
             # for popso in range(1,12+5+1):
             for popso in range(1,config["PO"]+config["PSO"]+1):
-                aw[f"{get_column_letter(popso+4)}{nco+2}"] = f'=IF({data["Section"]}_Input_Details!{get_column_letter(popso+4)}{nco+2}="", "", {data["Section"]}_Input_Details!{get_column_letter(popso+4)}{nco+2})'
+                aw[f"{get_column_letter(popso+4)}{nco+2}"]=f"='{data['Section']}_Input_Details'!{get_column_letter(popso+4)}{nco+2}"
                 cellstyle(aw[f"{get_column_letter(popso+4)}{nco+2}"], alignment=True, bold=True)
             
     return aw
