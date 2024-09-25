@@ -19,12 +19,10 @@ from Part_1.write_course_attainment import write_course_attainment
 from Part_1.printout import printout
 import os
 import uuid
-
-import os
-import uuid
 from openpyxl import load_workbook
 import pandas as pd
 from openpyxl.utils import get_column_letter
+import io
 
 def driver_part2(input_dir_path, output_dir_path, config):
 
@@ -75,7 +73,12 @@ def driver_part2(input_dir_path, output_dir_path, config):
         for file in excel_files:
             if file.endswith(".xlsx") and not file.startswith("Combined"):
                 file_path = os.path.join(input_dir_path, file)
-                wbread = load_workbook(file_path, data_only=True)
+
+                in_mem_file = None
+                with open(file_path, 'rb') as f:
+                    in_mem_file = io.BytesIO(f.read())
+
+                wbread = load_workbook(in_mem_file, data_only=True)
 
                 alldata={}
                 Component_Details = {}
