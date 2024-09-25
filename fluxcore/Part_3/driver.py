@@ -10,6 +10,7 @@ from openpyxl.utils import get_column_letter
 from Part_1.printout import printout
 from Part_1.utils import cellstyle_range, cellstyle
 import xlwings as xw
+import io
 
 def recalculate_workbook(file_path):
     app = xw.App(visible=False)
@@ -57,21 +58,26 @@ def driver_part3(input_dir_path, output_dir_path,config):
     for file in os.listdir(input_dir_path):
         if file.endswith(".xlsx") and not file.startswith("final"):
             print(f"Processing file: {file}")
+            file_path = os.path.join(input_dir_path, file)
 
-            recalculate_workbook(os.path.join(input_dir_path, file))
+            recalculate_workbook(file_path)
 
-            try:
-                wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
-                print(f"Successfully loaded workbook: {file}")
-            except Exception as e:
-                warnings.append(f"Failed to load workbook {file}: {e}")
-                print(f"Error: Failed to load workbook {file}: {e}")
-                continue
+            in_mem_file = None
+            with open(file_path, 'rb') as f:
+                in_mem_file = io.BytesIO(f.read())
+            wbread = load_workbook(in_mem_file, data_only=True)
+            
+            print(f"Successfully loaded workbook: {file}")
 
             ws_printout=""
             for ws in wbread.sheetnames:
                 if ws.endswith("Printout") and ws.startswith("Combined"):
                     ws_printout=ws
+
+            if ws_printout=="":
+                for ws in wbread.sheetnames:
+                    if ws.endswith("Printout"):
+                        ws_printout=ws
 
             if ws_printout=="":
                 warnings.append(f"Printout sheet not found in {file}")
@@ -108,7 +114,6 @@ def driver_part3(input_dir_path, output_dir_path,config):
                         print(f"Error in {file} at row {row} and column {col}: {e}")
                 startrow += 1
             startrow += 1
-          
 
 
 
@@ -163,7 +168,13 @@ def driver_part3(input_dir_path, output_dir_path,config):
         #file shouldnt start with final
         if file.endswith(".xlsx") and not file.startswith("final"):
             print(f"Processing file: {file}")
-            wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
+            file_path = os.path.join(input_dir_path, file)
+
+            in_mem_file = None
+            with open(file_path, 'rb') as f:
+                in_mem_file = io.BytesIO(f.read())
+                
+            wbread = load_workbook(in_mem_file, data_only=True)
             #find the name of worksheet which ends with Input_Details
             wsname_ID=""
             wsname_CA=""
@@ -174,10 +185,17 @@ def driver_part3(input_dir_path, output_dir_path,config):
                     wsname_CA=ws
 
             if wsname_ID=="":
-                warnings.append(f"Input_Details sheet not found in {file}")
-                return warnings
+                for ws in wbread.sheetnames:
+                    if ws.endswith("Input_Details"):
+                        wsname_ID=ws
+
             if wsname_CA=="":
-                warnings.append(f"Course_Attainment sheet not found in {file}")
+                for ws in wbread.sheetnames:
+                    if ws.endswith("Course_Attainment"):
+                        wsname_CA=ws
+
+            if wsname_ID=="" or wsname_CA=="":
+                warnings.append(f"Input_Details or Course_Attainment sheet not found in {file}")
                 return warnings
             
             # Check if number of POs and PSOs are same as in config file
@@ -211,8 +229,8 @@ def driver_part3(input_dir_path, output_dir_path,config):
     final_po_table = final_po_table.sort_values(by=['Academic Year', 'Semester code'])
     #print(final_po_table)
 
-    dataframes_dict = {group: data.drop(['Academic Year', 'Semester', 'Semester code'], axis=1)
-                   for group, data in final_po_table.groupby(['Academic Year', 'Semester'])}
+    dataframes_dict = {group: data.drop(['Academic Year', 'Semester', 'Semester code'], axis=1) 
+                    for group, data in final_po_table.groupby(['Academic Year', 'Semester'])}
 
 
 
@@ -263,7 +281,7 @@ def driver_part3(input_dir_path, output_dir_path,config):
     wswrite_POCalculation.merge_cells(f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}")
     wswrite_POCalculation[f"A{startrow}"]="Indirect Assessment At PO Level"
     cellstyle_range(wswrite_POCalculation[f"A{startrow}:{get_column_letter(3+config['PO']+config['PSO'])}{startrow}"], size=14, bold=True, alignment=True, border=True)
-  
+
     po_data_col=3
     startrow+=1
 
@@ -402,13 +420,23 @@ def driver_part3(input_dir_path, output_dir_path,config):
         #file shouldnt start with final
         if file.endswith(".xlsx") and not file.startswith("final"):
             print(f"Processing file: {file}")
-            wbread = load_workbook(os.path.join(input_dir_path, file), data_only=True)
+            file_path = os.path.join(input_dir_path, file)
+            in_mem_file = None
+            with open(file_path, 'rb') as f:
+                in_mem_file = io.BytesIO(f.read())
+
+            wbread = load_workbook(file_path, data_only=True)
             #find the name of worksheet which ends with Input_Details
             wsname_ID=""
 
             for ws in wbread.sheetnames:
                 if ws.endswith("Input_Details") and ws.startswith("Combined"):
                     wsname_ID=ws
+
+            if wsname_ID=="":
+                for ws in wbread.sheetnames:
+                    if ws.endswith("Input_Details"):
+                        wsname_ID=ws
 
             if wsname_ID=="":
                 warnings.append(f"Input_Details sheet not found in {file}")
