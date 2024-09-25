@@ -52,7 +52,6 @@
     .tagline img {
       max-width: 100%;
       height: auto;
-      margin-bottom: 50px;
     }
 
     .tagline, .stl {
@@ -108,11 +107,12 @@
         <div class="tagline">
           <img style="height: 80px;" src="{% static 'assets\LocalFlux_Assets\localflux-high-resolution-logo-transparent-v2.png'%}" alt="LocalFlux Logo">
           <h1>Empowering Excellence & Accrediting Success!</h1>
+          <br><br>
+          <a class="btn btn-full scrollto" href="{% url 'dashboard' %}">Start Accrediting!</a>
         </div>
         <h2 class="stl">
           Unlock Opportunities and Enhance Credibility with Our Accreditation System
         </h2>
-        <a class="btn btn-full scrollto" href="{% url 'dashboard' %}">Start Accrediting!</a>
       </div>
     </div>
   </section><!-- End Hero -->
