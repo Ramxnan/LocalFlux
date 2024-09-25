@@ -519,11 +519,7 @@
                     </div>
 
                     <div id="BranchRight" style="display: none">
-
-                        <div id="Note">
-                            <h9 class="text-left" style="color: red;">-> red folder name indicates an unsuccessful folder that needs to be deleted.</h5><br>
-                            <h9 class="text-left" style="color: green;">-> green folder name indicates a successful combination.</h5>
-                        </div>
+                        <br><br><br>
                         <h4>Combined Files</h4>
                         {% for folder_name, data in Branch_Calculation.items %}
                             <div class="folder-entry mb-2">
@@ -565,7 +561,6 @@
 
                     <div id="BatchRight" style="display: none">
                         <br><br><br>
-
                         <h3>Combined Batch Files</h3>
                         {% for folder_name, data in Batch_Calculation.items %}
                             <div class="folder-entry mb-2">
@@ -613,33 +608,6 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.bundle.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Iterate over each folder entry
-            $('.folder-entry').each(function() {
-                var folderDiv = $(this); // Current folder entry
-                var hasCombined = false;
-    
-                // Iterate over each file in this folder
-                folderDiv.find('.file-link').each(function() {
-                    var filename = $(this).data('filename');
-                    
-                    // Check if the filename starts with "Combined_"
-                    if (filename.startsWith("Combined_")) {
-                        hasCombined = true;
-                        return false; // Break out of loop once we find a match
-                    }
-                });
-    
-                // Apply green color if there is a file starting with "Combined_", otherwise red
-                if (hasCombined) {
-                    folderDiv.find('.foldername').css('color', 'green');
-                } else {
-                    folderDiv.find('.foldername').css('color', 'red');
-                }
-            });
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggleFilesContainers = document.querySelectorAll('.toggle-files');
