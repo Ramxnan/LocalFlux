@@ -35,6 +35,8 @@ if exist ".git" (
     echo ========================================
 )
 
+git pull
+
 REM Set the path to the local Python executable
 set PYTHON_DIR=%cd%\python
 set PYTHON_PATH=%PYTHON_DIR%\python.exe
