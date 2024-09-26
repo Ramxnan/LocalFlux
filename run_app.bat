@@ -10,6 +10,7 @@ set "PATH=%PATH%;C:\Program Files\Git\bin"
 REM Optionally add Git to the system PATH for future sessions
 setx PATH "%PATH%;C:\Program Files\Git\bin"
 REM Check if Git is already installed
+
 git --version
 if %errorlevel% neq 0 (
     REM Add Git to PATH for the current session
