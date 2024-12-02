@@ -730,9 +730,19 @@
         $(document).ready(function(){
             $("#academicYearStart").change(function() {
                 var startYear = $(this).val();
-                $("#academicYearEnd").val(parseInt(startYear) + 1);
+                var errorMessage = $("#academicYearError");
+                if (/^\d{4}$/.test(startYear)) {
+                    $("#academicYearEnd").val(parseInt(startYear) + 1);
+                    errorMessage.text('');
+                } else {
+                    errorMessage.text("Please enter a valid 4-digit year.");
+                    $(this).val('');
+                    $("#academicYearEnd").val('');
+                }
             });
-    
+
+            // Add this line to create the error message element
+            $("#academicYearStart").after('<div id="academicYearError" style="color: red; font-size: 0.9em;"></div>');
             $("#batch").on("focus", function(){
                 this.type = 'year';
             });
